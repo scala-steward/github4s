@@ -170,6 +170,50 @@ class ReposSpec extends BaseSpec {
     )
   }
 
+  "Repos.listBranches" should "call to httpClient.get with the right parameters" in {
+    val response: GHResponse[List[Branch]] =
+      Right(GHResult(List(branch), okStatusCode, Map.empty))
+
+    val httpClientMock = httpClientMockGet[List[Branch]](
+      url = s"repos/$validRepoOwner/$validRepoName/branches",
+      response = response
+    )
+
+    val repos = new Repos[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+
+    repos.listBranches(
+      accessToken = sampleToken,
+      headers = headerUserAgent,
+      owner = validRepoOwner,
+      repo = validRepoName
+    )
+  }
+
+  "Repos.listBranches" should "list protected branches only" in {
+    val response: GHResponse[List[Branch]] =
+      Right(GHResult(List(protectedBranch), okStatusCode, Map.empty))
+
+    val httpClientMock = httpClientMockGet[List[Branch]](
+      url = s"repos/$validRepoOwner/$validRepoName/branches",
+      params = Map("protected" → "true"),
+      response = response,
+    )
+
+    val repos = new Repos[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+
+    repos.listBranches(
+      accessToken = sampleToken,
+      headers = headerUserAgent,
+      owner = validRepoOwner,
+      repo = validRepoName,
+      onlyProtected = Some(true)
+    )
+  }
+
   "Repos.listContributors" should "call to httpClient.get with the right parameters" in {
 
     val response: GHResponse[List[User]] =

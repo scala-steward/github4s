@@ -103,6 +103,18 @@ case class Commit(
     author_url: Option[String]
 )
 
+case class Branch(
+  name: String,
+  commit: BranchCommit,
+  `protected`: Option[Boolean],
+  protection_url: Option[String]
+)
+
+case class BranchCommit(
+  sha: String,
+  url: String
+)
+
 case class NewReleaseRequest(
     tag_name: String,
     name: String,
