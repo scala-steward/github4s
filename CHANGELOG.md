@@ -1,5 +1,24 @@
 # Changelog
 
+## 12/27/2018 - Version 0.20.0
+
+Release changes:
+
+* List user repositories api ([#224](https://github.com/47deg/github4s/pull/224))
+* Add support for the list outside collaborators endpoint ([#225](https://github.com/47deg/github4s/pull/225))
+* Fix documentation for the list available assignees endpoint ([#227](https://github.com/47deg/github4s/pull/227))
+* Add missing links to issue table of contents ([#228](https://github.com/47deg/github4s/pull/228))
+* Add support for the list available assignees endpoint ([#226](https://github.com/47deg/github4s/pull/226))
+* Missing microsite menu entries + broken link ([#229](https://github.com/47deg/github4s/pull/229))
+* Introduce a way to distinguish different github errors ([#230](https://github.com/47deg/github4s/pull/230))
+* Fix returned type in list branches docs ([#235](https://github.com/47deg/github4s/pull/235))
+* Add support for the list branched endpoint (47deg#231) ([#232](https://github.com/47deg/github4s/pull/232))
+* Update Ruby to latest 2.3.8 for Travis CI ([#241](https://github.com/47deg/github4s/pull/241))
+* Fix decoding of issue when body is null ([#236](https://github.com/47deg/github4s/pull/236))
+* Build upgrade and Release 0.20.0 ([#243](https://github.com/47deg/github4s/pull/243))
+* Add Edit gist api ([#240](https://github.com/47deg/github4s/pull/240))
+
+
 ## 10/04/2018 - Version 0.19.0
 
 Release changes:
