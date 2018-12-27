@@ -175,6 +175,19 @@ class GHGists(accessToken: Option[String] = None)(implicit O: GistOps[GitHub4s])
       files: Map[String, GistFile]
   ): GHIO[GHResponse[Gist]] =
     O.newGist(description, public, files, accessToken)
+
+  def getGist(
+      gistId: String,
+      sha: Option[String] = None
+  ): GHIO[GHResponse[Gist]] =
+    O.getGist(gistId, sha, accessToken)
+
+  def editGist(
+      gistId: String,
+      description: String,
+      files: Map[String, Option[EditGistFile]]
+  ): GHIO[GHResponse[Gist]] =
+    O.editGist(gistId, description, files, accessToken)
 }
 
 class GHIssues(accessToken: Option[String] = None)(implicit O: IssueOps[GitHub4s]) {

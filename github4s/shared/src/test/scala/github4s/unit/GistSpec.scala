@@ -61,4 +61,92 @@ class GistSpec extends BaseSpec {
     )
   }
 
+  "Gist.getGist" should "call to httpClient.get with the right parameters without sha" in {
+
+    val response: GHResponse[Gist] =
+      Right(GHResult(gist, okStatusCode, Map.empty))
+
+    val httpClientMock = httpClientMockGet[Gist](
+      url = s"gists/$validGistId",
+      response = response
+    )
+
+    val gists = new Gists[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+
+    gists.getGist(
+      validGistId,
+      sha = None,
+      headerUserAgent,
+      sampleToken
+    )
+  }
+
+  it should "call to httpClient.get with the right parameters with sha" in {
+
+    val response: GHResponse[Gist] =
+      Right(GHResult(gist, okStatusCode, Map.empty))
+
+    val httpClientMock = httpClientMockGet[Gist](
+      url = s"gists/$validGistId/$validGistSha",
+      response = response
+    )
+
+    val gists = new Gists[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+
+    gists.getGist(
+      validGistId,
+      sha = Some(validGistSha),
+      headerUserAgent,
+      sampleToken
+    )
+  }
+
+  "Gist.editGist" should "call to httpClient.patch with the right parameters" in {
+
+    val response: GHResponse[Gist] =
+      Right(GHResult(gist, okStatusCode, Map.empty))
+
+    val request =
+      """
+        |{
+        |  "description": "A Gist",
+        |  "files": {
+        |    "test.scala": {
+        |      "content": "val meaningOfLife = 42"
+        |    },
+        |    "fest.scala": {
+        |      "content": "val meaningOfLife = 42",
+        |      "filename": "best.scala"
+        |    },
+        |    "rest.scala": null
+        |  }
+        |}""".stripMargin
+
+    val httpClientMock = httpClientMockPatch[Gist](
+      url = s"gists/$validGistId",
+      json = request,
+      response = response
+    )
+
+    val gists = new Gists[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+
+    gists.editGist(
+      validGistId,
+      validGistDescription,
+      Map(
+        validGistFilename        → Some(EditGistFile(validGistFileContent)),
+        validGistOldFilename     → Some(EditGistFile(validGistFileContent, Some(validGistNewFilename))),
+        validGistDeletedFilename → None
+      ),
+      headerUserAgent,
+      sampleToken
+    )
+  }
+
 }

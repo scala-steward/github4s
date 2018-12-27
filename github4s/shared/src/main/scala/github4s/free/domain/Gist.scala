@@ -20,7 +20,8 @@ case class Gist(
     url: String,
     id: String,
     description: String,
-    public: Boolean
+    public: Boolean,
+    files: Map[String, GistFile]
 )
 
 case class GistFile(
@@ -31,4 +32,14 @@ case class NewGistRequest(
     description: String,
     public: Boolean,
     files: Map[String, GistFile]
+)
+
+case class EditGistFile(
+    content: String,
+    filename: Option[String] = None
+)
+
+case class EditGistRequest(
+    description: String,
+    files: Map[String, Option[EditGistFile]]
 )

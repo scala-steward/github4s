@@ -680,6 +680,10 @@ trait FakeResponses {
       |}
     """.stripMargin
 
+  val singleGistValidResponse = newGistValidResponse
+  val specificRevisionOfGistValidResponse = newGistValidResponse
+  val editedGistValidResponse = newGistValidResponse
+
   val singleReference =
     """
       |{

@@ -423,6 +423,78 @@ trait MockGithubApiServer extends MockServerService with FakeResponses with Test
         .withStatusCode(unauthorizedStatusCode)
         .withBody(unauthorizedResponse))
 
+  //Gists >> get a single gist
+
+  mockServer
+    .when(
+      request
+        .withMethod("GET")
+        .withPath(s"/gists/$validGistId")
+        .withHeader("Authorization", tokenHeader))
+    .respond(
+      response
+        .withStatusCode(okStatusCode)
+        .withBody(singleGistValidResponse))
+
+  mockServer
+    .when(
+      request
+        .withMethod("GET")
+        .withPath(s"/gists/$validGistId")
+        .withHeader(not("Authorization")))
+    .respond(
+      response
+        .withStatusCode(unauthorizedStatusCode)
+        .withBody(unauthorizedResponse))
+
+  //Gists >> get a specific revision of a gist
+
+  mockServer
+    .when(
+      request
+        .withMethod("GET")
+        .withPath(s"/gists/$validGistId/$validGistSha")
+        .withHeader("Authorization", tokenHeader))
+    .respond(
+      response
+        .withStatusCode(okStatusCode)
+        .withBody(specificRevisionOfGistValidResponse))
+
+  mockServer
+    .when(
+      request
+        .withMethod("GET")
+        .withPath(s"/gists/$validGistId/$validGistSha")
+        .withHeader(not("Authorization")))
+    .respond(
+      response
+        .withStatusCode(unauthorizedStatusCode)
+        .withBody(unauthorizedResponse))
+
+  //Gists >> edit a gist
+
+  mockServer
+    .when(
+      request
+        .withMethod("PATCH")
+        .withPath(s"/gists/$validGistId")
+        .withHeader("Authorization", tokenHeader))
+    .respond(
+      response
+        .withStatusCode(okStatusCode)
+        .withBody(editedGistValidResponse))
+
+  mockServer
+    .when(
+      request
+        .withMethod("PATCH")
+        .withPath(s"/gists/$validGistId")
+        .withHeader(not("Authorization")))
+    .respond(
+      response
+        .withStatusCode(unauthorizedStatusCode)
+        .withBody(unauthorizedResponse))
+
   // Git >> References
 
   mockServer
