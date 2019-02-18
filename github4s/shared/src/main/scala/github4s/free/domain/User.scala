@@ -26,5 +26,10 @@ case class User(
     company: Option[String] = None,
     blog: Option[String] = None,
     location: Option[String] = None,
-    bio: Option[String] = None
+    bio: Option[String] = None,
+    followers_url: Option[String] = None,
+    following_url: Option[String] = None,
+    `type`: String = "User", // I think this can be either "User" or "Organization"
+    hireable: Option[Boolean] = None,
+    public_repos: Option[Int] = None
 )
