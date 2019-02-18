@@ -31,6 +31,9 @@ class GHUsers(accessToken: Option[String] = None)(implicit O: UserOps[GitHub4s])
   def getUsers(since: Int, pagination: Option[Pagination] = None): GHIO[GHResponse[List[User]]] =
     O.getUsers(since, pagination, accessToken)
 
+  def getFollowing(username: String): GHIO[GHResponse[List[User]]] =
+    O.getFollowing(username, accessToken)
+
 }
 
 class GHRepos(accessToken: Option[String] = None)(implicit O: RepositoryOps[GitHub4s]) {

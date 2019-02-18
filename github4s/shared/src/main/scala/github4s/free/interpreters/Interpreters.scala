@@ -139,8 +139,8 @@ class Interpreters[M[_], C](
         fa match {
           case GetUser(username, accessToken) ⇒ users.get(accessToken, headers, username)
           case GetAuthUser(accessToken)       ⇒ users.getAuth(accessToken, headers)
-          case GetUsers(since, pagination, accessToken) ⇒
-            users.getUsers(accessToken, headers, since, pagination)
+          case GetUsers(since, pagination, accessToken) ⇒ users.getUsers(accessToken, headers, since, pagination)
+          case GetFollowing(username, accessToken) => users.getFollowing(accessToken, headers, username)
         }
       }
     }

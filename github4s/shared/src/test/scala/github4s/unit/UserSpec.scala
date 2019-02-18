@@ -76,4 +76,20 @@ class UserSpec extends BaseSpec {
     users.getUsers(sampleToken, headerUserAgent, 1)
   }
 
+  "User.getFollowing" should "call to httpClient.get with the right parameters" in {
+
+    val response: GHResponse[List[User]] =
+      Right(GHResult(List(user), okStatusCode, Map.empty))
+
+    val httpClientMock = httpClientMockGet[List[User]](
+      url = s"users/$validUsername/following",
+      response = response
+    )
+
+    val users = new Users[String, Id] {
+      override val httpClient: HttpClient[String, Id] = httpClientMock
+    }
+    users.getFollowing(sampleToken, headerUserAgent, validUsername)
+  }  
+
 }
