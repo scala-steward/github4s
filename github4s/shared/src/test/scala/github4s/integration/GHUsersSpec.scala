@@ -73,7 +73,7 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     })
   }
 
-  "Users >> GetFollowing" should "return users for a valid since value" in {
+  "Users >> GetFollowing" should "return the expected following list for a valid username" in {
     val response =
       Github(accessToken).users
         .getFollowing(validUsername)
@@ -85,16 +85,13 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     })
   }
 
-  it should "return an empty list when a invalid since value is provided" in {
+  it should "return error on Left for invalid username" in {
     val response =
       Github(accessToken).users
         .getFollowing(invalidUsername)
         .execFuture[T](headerUserAgent)
 
-    testFutureIsRight[List[User]](response, { r =>
-      r.result.isEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+      testFutureIsLeft(response)
   }  
 
 }
