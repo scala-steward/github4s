@@ -12,6 +12,7 @@ with Github4s, you can interacts with:
   - [Get a user](#get-a-user)
   - [Get an authenticated user](#get-an-authenticated-user)
   - [Get a list of users](#get-a-list-of-users)
+  - [List users followed by another user](#get-following)
 
 The following examples assume the following imports and token:
 
@@ -93,3 +94,23 @@ As you can see, a few features of the user endpoint are missing.
 As a result, if you'd like to see a feature supported, feel free to create an issue and/or a pull request!
 
 [user-scala]: https://github.com/47deg/github4s/blob/master/github4s/shared/src/main/scala/github4s/free/domain/User.scala
+
+### List users followed by another user
+
+You can get a list of users followed by another user using `getFollowing`, it takes as argument:
+
+- `username`: of the user to retrieve.
+
+```tut:silent
+val getUser = Github(accessToken).users.getFollowing("rafaparadela")
+getUser.exec[cats.Id, HttpResponse[String]]() match {
+  case Left(e) => println(s"Something went wrong: ${e.getMessage}")
+  case Right(r) => println(r.result)
+}
+```
+
+The `result` on the right is the corresponding [List[User]][user-scala].
+
+See [the API doc](https://developer.github.com/v3/users/followers/#list-users-followed-by-another-use) for full reference.
+
+
