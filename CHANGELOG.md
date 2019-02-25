@@ -4,7 +4,11 @@
 
 Release changes:
 
-Releasing 0.20.1
+* Update headers and sbt (#247)
+* Adding missing fields to User (#250)
+* Add cla-bot to the github4s in the wild section (#252)
+* Replaces circe-jawn by circe-jackson Parser (#253)
+* Releases 0.20.1 (#254)
 
 
 ## 12/27/2018 - Version 0.20.0
