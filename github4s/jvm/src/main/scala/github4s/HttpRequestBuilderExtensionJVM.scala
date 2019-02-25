@@ -17,8 +17,9 @@
 package github4s
 
 import github4s.GithubResponses._
-import io.circe.Decoder
-import io.circe.parser._
+import io.circe._
+import io.circe.syntax._
+import io.circe.jackson._
 import scalaj.http._
 import cats.implicits._
 import github4s.free.interpreters.Capture
@@ -89,10 +90,12 @@ trait HttpRequestBuilderExtensionJVM {
     Either.right(GHResult((): Unit, r.code, toLowerCase(r.headers)))
 
   def decodeEntity[A](r: HttpResponse[String])(implicit D: Decoder[A]): GHResponse[A] =
-    decode[A](r.body).bimap(
-      e ⇒ JsonParsingException(e.getMessage, r.body),
-      result ⇒ GHResult(result, r.code, toLowerCase(r.headers))
-    )
+    parse(r.body)
+      .flatMap(_.as[A])
+      .bimap(
+        e ⇒ JsonParsingException(e.getMessage, r.body),
+        result ⇒ GHResult(result, r.code, toLowerCase(r.headers))
+      )
 
   private def toLowerCase(
       headers: Map[String, IndexedSeq[String]]): Map[String, IndexedSeq[String]] =
