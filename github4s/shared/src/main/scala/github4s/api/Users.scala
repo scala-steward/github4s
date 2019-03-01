@@ -73,4 +73,18 @@ class Users[C, M[_]](
     httpClient
       .get[List[User]](accessToken, "users", headers, Map("since" → since.toString), pagination)
 
+  /**
+    * Get information for a particular user's list of users they follow
+    *
+    * @param accessToken to identify the authenticated user
+    * @param headers optional user headers to include in the request
+    * @param username of the user to retrieve
+    * @return GHResponse[User] User details
+    */
+  def getFollowing(
+           accessToken: Option[String] = None,
+           headers: Map[String, String] = Map(),
+           username: String): M[GHResponse[List[User]]] =
+    httpClient.get[List[User]](accessToken, s"users/$username/following", headers)
+
 }

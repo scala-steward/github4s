@@ -33,6 +33,9 @@ final case class GetUsers(
     pagination: Option[Pagination] = None,
     accessToken: Option[String] = None)
     extends UserOp[GHResponse[List[User]]]
+final case class GetFollowing(username: String,
+  accessToken: Option[String] = None)
+  extends UserOp[GHResponse[List[User]]]
 
 /**
  * Exposes Users operations as a Free monadic algebra that may be combined with other Algebras via
@@ -51,6 +54,9 @@ class UserOps[F[_]](implicit I: InjectK[UserOp, F]) {
       pagination: Option[Pagination] = None,
       accessToken: Option[String] = None): Free[F, GHResponse[List[User]]] =
     Free.inject[UserOp, F](GetUsers(since, pagination, accessToken))
+
+  def getFollowing(username: String, accessToken: Option[String] = None) =
+    Free.inject[UserOp, F](GetFollowing(username, accessToken))
 
 }
 

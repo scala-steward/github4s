@@ -73,4 +73,25 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     })
   }
 
+  "Users >> GetFollowing" should "return the expected following list for a valid username" in {
+    val response =
+      Github(accessToken).users
+        .getFollowing(validUsername)
+        .execFuture[T](headerUserAgent)
+
+    testFutureIsRight[List[User]](response, { r =>
+      r.result.nonEmpty shouldBe true
+      r.statusCode shouldBe okStatusCode
+    })
+  }
+
+  it should "return error on Left for invalid username" in {
+    val response =
+      Github(accessToken).users
+        .getFollowing(invalidUsername)
+        .execFuture[T](headerUserAgent)
+
+      testFutureIsLeft(response)
+  }  
+
 }
