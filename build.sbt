@@ -7,7 +7,10 @@ pgpPublicRing := file(s"$gpgFolder/pubring.gpg")
 pgpSecretRing := file(s"$gpgFolder/secring.gpg")
 
 lazy val root = (project in file("."))
-  .settings(moduleName := "github4s-root")
+  .settings(
+    moduleName := "github4s-root",
+    crossScalaVersions := Nil
+  )
   .aggregate(allModules: _*)
   .dependsOn(allModulesDeps: _*)
   .settings(noPublishSettings: _*)

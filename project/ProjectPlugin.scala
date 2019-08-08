@@ -22,19 +22,20 @@ object ProjectPlugin extends AutoPlugin {
   object autoImport {
 
     lazy val V = new {
-      val base64: String             = "0.2.4"
-      val cats: String               = "1.5.0"
-      val catsEffect: String         = "1.1.0"
-      val circe: String              = "0.11.0"
+      val base64: String             = "0.2.9"
+      val cats: String               = "1.6.1"
+      val catsEffect: String         = "1.3.1"
+      val circe: String              = "0.11.1"
       val paradise: String           = "2.1.1"
-      val roshttp: String            = "2.2.3"
-      val simulacrum: String         = "0.14.0"
+      val roshttp: String            = "2.2.4"
+      val simulacrum: String         = "0.19.0"
       val scala211: String           = "2.11.12"
-      val scala212: String           = "2.12.8"
-      val scalaj: String             = "2.4.1"
+      val scala212: String           = "2.12.9"
+      val scala213: String           = "2.13.0"
+      val scalaj: String             = "2.4.2"
       val scalamockScalatest: String = "3.6.0"
-      val scalaTest: String          = "3.0.5"
-      val scalaz: String             = "7.2.27"
+      val scalaTest: String          = "3.0.8"
+      val scalaz: String             = "7.2.28"
 
     }
 
@@ -84,7 +85,7 @@ object ProjectPlugin extends AutoPlugin {
     lazy val jvmDeps = Seq(
       libraryDependencies ++= Seq(
         %%("scalaj", V.scalaj),
-        "org.mock-server" % "mockserver-netty" % "3.10.4" % Test excludeAll ExclusionRule(
+        "org.mock-server" % "mockserver-netty" % "3.10.8" % Test excludeAll ExclusionRule(
           "com.twitter")
       )
     )
@@ -122,7 +123,7 @@ object ProjectPlugin extends AutoPlugin {
       startYear := Option(2016),
       resolvers += Resolver.sonatypeRepo("snapshots"),
       scalaVersion := V.scala212,
-      crossScalaVersions := Seq(V.scala211, V.scala212),
+      crossScalaVersions := Seq(V.scala211, V.scala212, V.scala213),
       scalacOptions ~= (_ filterNot Set("-Xlint").contains),
       orgGithubTokenSetting := "GITHUB4S_ACCESS_TOKEN",
       resolvers += Resolver.bintrayRepo("hmil", "maven"),
@@ -136,7 +137,7 @@ object ProjectPlugin extends AutoPlugin {
         ScalaJSBadge.apply(_),
         GitHubIssuesBadge.apply(_)
       ),
-      orgSupportedScalaJSVersion := Some("0.6.21"),
+      orgSupportedScalaJSVersion := Some("0.6.28"),
       orgScriptTaskListSetting ++= List(
         (ScoverageKeys.coverageAggregate in Test).asRunnableItemFull,
         "docs/tut".asRunnableItem
