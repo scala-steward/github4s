@@ -29,7 +29,6 @@ object ProjectPlugin extends AutoPlugin {
       val paradise: String           = "2.1.1"
       val roshttp: String            = "2.2.4"
       val simulacrum: String         = "0.19.0"
-      val scala211: String           = "2.11.12"
       val scala212: String           = "2.12.9"
       val scala213: String           = "2.13.0"
       val scalaj: String             = "2.4.2"
@@ -126,7 +125,7 @@ object ProjectPlugin extends AutoPlugin {
       startYear := Option(2016),
       resolvers += Resolver.sonatypeRepo("snapshots"),
       scalaVersion := V.scala212,
-      crossScalaVersions := Seq(V.scala211, V.scala212, V.scala213),
+      crossScalaVersions := Seq(V.scala212, V.scala213),
       scalacOptions := {
         val withStripedLinter = scalacOptions.value filterNot Set("-Xlint").contains
         CrossVersion.partialVersion(scalaBinaryVersion.value) match {
