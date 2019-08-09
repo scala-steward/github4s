@@ -1,4 +1,4 @@
-import com.typesafe.sbt.site.jekyll.JekyllPlugin.autoImport._
+import com.typesafe.sbt.site.SitePlugin.autoImport._
 import microsites._
 import microsites.MicrositesPlugin.autoImport._
 import sbt.Keys._
@@ -23,9 +23,9 @@ object ProjectPlugin extends AutoPlugin {
 
     lazy val V = new {
       val base64: String             = "0.2.9"
-      val cats: String               = "1.6.1"
+      val cats: String               = "2.0.0-RC1"
       val catsEffect: String         = "1.3.1"
-      val circe: String              = "0.11.1"
+      val circe: String              = "0.12.0-RC1"
       val paradise: String           = "2.1.1"
       val roshttp: String            = "2.2.4"
       val simulacrum: String         = "0.19.0"
@@ -55,7 +55,7 @@ object ProjectPlugin extends AutoPlugin {
           Map("title" -> "Changelog", "section" -> "changelog", "position" -> "2")
         )
       ),
-      includeFilter in Jekyll := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md",
+      includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md",
       scalacOptions in Tut ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )
 
@@ -79,7 +79,10 @@ object ProjectPlugin extends AutoPlugin {
     )
 
     lazy val standardCommonDeps = Seq(
-      libraryDependencies += compilerPlugin(%%("paradise", V.paradise) cross CrossVersion.full)
+      libraryDependencies ++= (CrossVersion.partialVersion(scalaBinaryVersion.value) match {
+        case Some((2, 13))  => Seq.empty[ModuleID]
+        case _              => Seq(compilerPlugin(%%("paradise", V.paradise)) cross CrossVersion.full)
+      })
     )
 
     lazy val jvmDeps = Seq(
@@ -124,7 +127,13 @@ object ProjectPlugin extends AutoPlugin {
       resolvers += Resolver.sonatypeRepo("snapshots"),
       scalaVersion := V.scala212,
       crossScalaVersions := Seq(V.scala211, V.scala212, V.scala213),
-      scalacOptions ~= (_ filterNot Set("-Xlint").contains),
+      scalacOptions := {
+        val withStripedLinter = scalacOptions.value filterNot Set("-Xlint").contains
+        CrossVersion.partialVersion(scalaBinaryVersion.value) match {
+          case Some((2, 13))  => withStripedLinter :+ "-Ymacro-annotations"
+          case _              => withStripedLinter
+        }
+      },
       orgGithubTokenSetting := "GITHUB4S_ACCESS_TOKEN",
       resolvers += Resolver.bintrayRepo("hmil", "maven"),
       orgBadgeListSetting := List(
