@@ -24,7 +24,7 @@ object ProjectPlugin extends AutoPlugin {
     lazy val V = new {
       val base64: String             = "0.2.9"
       val cats: String               = "2.0.0-RC1"
-      val catsEffect: String         = "1.3.1"
+      val catsEffect: String         = "2.0.0-RC1"
       val circe: String              = "0.12.0-RC1"
       val paradise: String           = "2.1.1"
       val roshttp: String            = "2.2.4"
@@ -32,7 +32,7 @@ object ProjectPlugin extends AutoPlugin {
       val scala212: String           = "2.12.9"
       val scala213: String           = "2.13.0"
       val scalaj: String             = "2.4.2"
-      val scalamockScalatest: String = "3.6.0"
+      val scalamock: String          = "4.3.0"
       val scalaTest: String          = "3.0.8"
       val scalaz: String             = "7.2.28"
 
@@ -71,9 +71,9 @@ object ProjectPlugin extends AutoPlugin {
         %%("circe-generic", V.circe),
         "io.circe" %% "circe-jackson28" % V.circe,
         %%("base64", V.base64),
-        %%("circe-parser", V.circe)                    % Test,
-        %%("scalamockScalatest", V.scalamockScalatest) % Test,
-        %%("scalatest", V.scalaTest)                   % Test
+        %%("circe-parser", V.circe)   % Test,
+        %%("scalamock", V.scalamock)  % Test,
+        %%("scalatest", V.scalaTest)  % Test
       )
     )
 

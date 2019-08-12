@@ -1,5 +1,5 @@
 addSbtPlugin("com.eed3si9n"       % "sbt-buildinfo"            % "0.9.0")
-addSbtPlugin("com.47deg"          % "sbt-org-policies"         % "0.11.4-SNAPSHOT")
+addSbtPlugin("com.47deg"          % "sbt-org-policies"         % "0.12.0-M1")
 addSbtPlugin("com.47deg"          % "sbt-microsites"           % "0.9.2")
 addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "0.6.28")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.1")
