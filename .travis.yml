@@ -1,10 +1,9 @@
 language: scala
-
-dist: precise
+dist: xenial
 
 scala:
-- 2.11.12
-- 2.12.8
+- 2.12.9
+- 2.13.0
 
 env:
 - SCALAENV=jvm
@@ -14,12 +13,12 @@ env:
 
 matrix:
   exclude:
-  - scala: 2.11.12
+  - scala: 2.13.0
     env: G4SBUILD=docs
   - env: SCALAENV=all
 
 jdk:
-- oraclejdk8
+- openjdk8
 
 before_install:
 - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
@@ -74,7 +73,7 @@ jobs:
               sbt docs/publishMicrosite;
             fi
           fi
-      scala: 2.12.8
+      scala: 2.12.9
       env: SCALAENV=all
 
 before_cache:
