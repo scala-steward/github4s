@@ -31,7 +31,7 @@ object ProjectPlugin extends AutoPlugin {
       val simulacrum: String         = "0.19.0"
       val scala211: String           = "2.11.12"
       val scala212: String           = "2.12.8"
-      val scalaj: String             = "2.4.1"
+      val scalaj: String             = "2.4.2"
       val scalamockScalatest: String = "3.6.0"
       val scalaTest: String          = "3.0.5"
       val scalaz: String             = "7.2.27"
