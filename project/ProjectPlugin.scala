@@ -28,7 +28,7 @@ object ProjectPlugin extends AutoPlugin {
       val circe: String              = "0.11.0"
       val paradise: String           = "2.1.1"
       val roshttp: String            = "2.2.3"
-      val simulacrum: String         = "0.14.0"
+      val simulacrum: String         = "0.19.0"
       val scala211: String           = "2.11.12"
       val scala212: String           = "2.12.8"
       val scalaj: String             = "2.4.1"
