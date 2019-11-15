@@ -25,7 +25,7 @@ object ProjectPlugin extends AutoPlugin {
       val base64: String             = "0.2.9"
       val cats: String               = "1.6.1"
       val catsEffect: String         = "2.0.0"
-      val circe: String              = "0.11.1"
+      val circe: String              = "0.11.2"
       val paradise: String           = "2.1.1"
       val roshttp: String            = "2.2.4"
       val simulacrum: String         = "0.19.0"
