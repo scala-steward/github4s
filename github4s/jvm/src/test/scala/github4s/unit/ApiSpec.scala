@@ -25,9 +25,11 @@ import scalaj.http._
 import cats.Id
 import github4s.jvm.ImplicitsJVM
 import github4s.utils.Integration
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 class ApiSpec
-    extends FlatSpec
+    extends AnyFlatSpec
     with Matchers
     with TestUtilsJVM
     with MockGithubApiServer

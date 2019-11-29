@@ -20,13 +20,15 @@ import cats.effect.IO
 import github4s.Github
 import github4s.Github._
 import github4s.cats.effect.js.Implicits._
-import org.scalatest.{Assertion, AsyncFunSuite, Matchers}
+import org.scalatest.Assertion
 import fr.hmil.roshttp.response.SimpleHttpResponse
 import github4s.GithubResponses.GHResponse
 import github4s.free.domain.User
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import scala.scalajs.js
+import org.scalatest.funsuite.AsyncFunSuite
+import org.scalatest.matchers.should.Matchers
 
 class CatsEffectJSSpec extends AsyncFunSuite with Matchers {
 

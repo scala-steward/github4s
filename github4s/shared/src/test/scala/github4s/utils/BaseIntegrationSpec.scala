@@ -20,9 +20,11 @@ import cats.syntax.either._
 import github4s.GithubResponses.{GHResponse, GHResult}
 import github4s.free.interpreters.{Capture, Interpreters}
 import github4s.HttpRequestBuilderExtension
-import org.scalatest.{Assertion, AsyncFlatSpec, Ignore, Inspectors, Matchers, Tag}
+import org.scalatest.{Assertion, Ignore, Inspectors, Tag}
 
 import scala.concurrent.{ExecutionContext, Future}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 object Integration extends Tag(if (sys.env.get("GITHUB4S_ACCESS_TOKEN").isDefined) "" else classOf[Ignore].getName)
 

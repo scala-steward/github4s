@@ -16,7 +16,7 @@
 
 package github4s.utils
 
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 trait TestUtilsJS extends Matchers with TestData {
 
