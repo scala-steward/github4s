@@ -1,6 +1,8 @@
 ---
 layout: home
-position: 10
+title: Home
+section: home
+position: 1
 ---
 
 # Github4s
