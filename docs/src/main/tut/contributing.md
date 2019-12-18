@@ -2,7 +2,8 @@
 layout: page
 title: Contributing
 section: home
-position: 1
+position: 2
+permalink: contributing
 ---
 
 # Contributing
