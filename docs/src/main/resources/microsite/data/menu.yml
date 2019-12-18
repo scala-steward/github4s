@@ -1,30 +1,30 @@
 options:
   - title: Getting Started
-    url: docs.html
+    url: docs
 
   - title: Authorization API
-    url: auth.html
+    url: auth
 
   - title: Gist API
-    url: gist.html
+    url: gist
 
   - title: Git Data API
-    url: git_data.html
+    url: git_data
 
   - title: Issue API
-    url: issue.html
+    url: issue
 
   - title: Pull Request API
-    url: pull_request.html
+    url: pull_request
 
   - title: User API
-    url: user.html
+    url: user
 
   - title: Repository API
-    url: repository.html
+    url: repository
 
   - title: Activity API
-    url: activity.html
+    url: activity
 
   - title: Organization API
-    url: organization.html
+    url: organization
