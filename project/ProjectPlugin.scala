@@ -45,6 +45,10 @@ object ProjectPlugin extends AutoPlugin {
       micrositeAuthor := "Github4s contributors",
       micrositeCompilingDocsTool := WithTut,
       micrositeOrganizationHomepage := "https://github.com/47deg/github4s/blob/master/AUTHORS.md",
+      micrositePalette := Map(
+        "brand-primary"         -> "#3D3832",
+        "brand-secondary"       -> "#f90",
+        "white-color"           -> "#FFFFFF"),
       micrositeExtraMdFiles := Map(
         file("CHANGELOG.md") -> ExtraMdFileConfig(
           "changelog.md",
@@ -52,7 +56,7 @@ object ProjectPlugin extends AutoPlugin {
           Map("title" -> "Changelog", "section" -> "changelog", "position" -> "2")
         )
       ),
-      includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md",
+      includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
       scalacOptions in Tut ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )
 
