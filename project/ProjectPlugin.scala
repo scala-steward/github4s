@@ -39,7 +39,7 @@ object ProjectPlugin extends AutoPlugin {
       micrositeName := "Github4s",
       micrositeDescription := "Github API wrapper written in Scala",
       micrositeBaseUrl := "github4s",
-      micrositeDocumentationUrl := "/github4s/docs.html",
+      micrositeDocumentationUrl := "docs",
       micrositeGithubOwner := "47deg",
       micrositeGithubRepo := "github4s",
       micrositeAuthor := "Github4s contributors",
@@ -53,9 +53,10 @@ object ProjectPlugin extends AutoPlugin {
         file("CHANGELOG.md") -> ExtraMdFileConfig(
           "changelog.md",
           "page",
-          Map("title" -> "Changelog", "section" -> "home", "position" -> "2")
+          Map("title" -> "Changelog", "section" -> "home", "position" -> "3")
         )
       ),
+      micrositeExtraMdFilesOutput := (tutSourceDirectory).value,
       includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
       scalacOptions in Tut ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )
