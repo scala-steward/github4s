@@ -22,20 +22,17 @@ object ProjectPlugin extends AutoPlugin {
   object autoImport {
 
     lazy val V = new {
-      val base64: String             = "0.2.9"
-      val cats: String               = "2.0.0"
-      val catsEffect: String         = "2.0.0"
-      val circe: String              = "0.11.2"
-      val circeJackson: String       = "0.11.1"
-      val paradise: String           = "2.1.1"
-      val roshttp: String            = "2.2.4"
-      val simulacrum: String         = "0.19.0"
-      val scala211: String           = "2.11.12"
-      val scala212: String           = "2.12.8"
-      val scalaj: String             = "2.4.2"
-      val scalamockScalatest: String = "3.6.0"
-      val scalaTest: String          = "3.0.8"
-      val scalaz: String             = "7.2.29"
+      val base64: String       = "0.2.9"
+      val cats: String         = "2.0.0"
+      val catsEffect: String   = "2.0.0"
+      val circe: String        = "0.11.2"
+      val circeJackson: String = "0.11.1"
+      val paradise: String     = "2.1.1"
+      val simulacrum: String   = "0.19.0"
+      val scala212: String     = "2.12.10"
+      val scalaj: String       = "2.4.2"
+      val scalamock: String    = "4.4.0"
+      val scalaTest: String    = "3.0.8"
     }
 
     lazy val micrositeSettings = Seq(
@@ -46,6 +43,7 @@ object ProjectPlugin extends AutoPlugin {
       micrositeGithubOwner := "47deg",
       micrositeGithubRepo := "github4s",
       micrositeAuthor := "Github4s contributors",
+      micrositeCompilingDocsTool := WithTut,
       micrositeOrganizationHomepage := "https://github.com/47deg/github4s/blob/master/AUTHORS.md",
       micrositeExtraMdFiles := Map(
         file("CHANGELOG.md") -> ExtraMdFileConfig(
@@ -58,11 +56,7 @@ object ProjectPlugin extends AutoPlugin {
       scalacOptions in Tut ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )
 
-    lazy val testSettings = Seq(
-      fork in Test := false
-    )
-
-    lazy val commonCrossDeps = Seq(
+    lazy val coreDeps = Seq(
       libraryDependencies ++= Seq(
         %%("cats-core", V.cats),
         %%("cats-free", V.cats),
@@ -71,32 +65,19 @@ object ProjectPlugin extends AutoPlugin {
         %%("circe-generic", V.circe),
         "io.circe" %% "circe-jackson28" % V.circeJackson,
         %%("base64", V.base64),
-        %%("circe-parser", V.circe)                    % Test,
-        %%("scalamockScalatest", V.scalamockScalatest) % Test,
-        %%("scalatest", V.scalaTest)                   % Test
-      )
-    )
-
-    lazy val standardCommonDeps = Seq(
-      libraryDependencies += compilerPlugin(%%("paradise", V.paradise) cross CrossVersion.full)
-    )
-
-    lazy val jvmDeps = Seq(
-      libraryDependencies ++= Seq(
         %%("scalaj", V.scalaj),
-        "org.mock-server" % "mockserver-netty" % "5.8.0" % Test excludeAll ExclusionRule(
-          "com.twitter")
+        %%("circe-parser", V.circe)  % Test,
+        %%("scalamock", V.scalamock) % Test,
+        %%("scalatest", V.scalaTest) % Test,
+        "org.mock-server"            % "mockserver-netty" % "5.8.0" % Test excludeAll ExclusionRule(
+          "com.twitter"),
+        compilerPlugin(%%("paradise", V.paradise) cross CrossVersion.full)
       )
     )
-
-    lazy val jsDeps: Def.Setting[Seq[ModuleID]] = libraryDependencies += %%%("roshttp", V.roshttp)
 
     lazy val docsDependencies: Def.Setting[Seq[ModuleID]] = libraryDependencies += %%(
       "scalatest",
       V.scalaTest)
-
-    lazy val scalazDependencies: Def.Setting[Seq[ModuleID]] =
-      libraryDependencies += %%("scalaz-concurrent", V.scalaz)
 
     lazy val catsEffectDependencies = Seq(
       libraryDependencies ++= Seq(
@@ -122,10 +103,9 @@ object ProjectPlugin extends AutoPlugin {
       startYear := Option(2016),
       resolvers += Resolver.sonatypeRepo("snapshots"),
       scalaVersion := V.scala212,
-      crossScalaVersions := Seq(V.scala211, V.scala212),
+      crossScalaVersions := Seq(V.scala212),
       scalacOptions ~= (_ filterNot Set("-Xlint").contains),
       orgGithubTokenSetting := "GITHUB4S_ACCESS_TOKEN",
-      resolvers += Resolver.bintrayRepo("hmil", "maven"),
       orgBadgeListSetting := List(
         TravisBadge.apply(_),
         GitterBadge.apply(_),
@@ -133,10 +113,8 @@ object ProjectPlugin extends AutoPlugin {
         MavenCentralBadge.apply(_),
         LicenseBadge.apply(_),
         ScalaLangBadge.apply(_),
-        ScalaJSBadge.apply(_),
         GitHubIssuesBadge.apply(_)
       ),
-      orgSupportedScalaJSVersion := Some("0.6.21"),
       orgScriptTaskListSetting ++= List(
         (ScoverageKeys.coverageAggregate in Test).asRunnableItemFull,
         "docs/tut".asRunnableItem

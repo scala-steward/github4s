@@ -1,25 +1,7 @@
 language: scala
-
 dist: trusty
-
-scala:
-- 2.11.12
-- 2.12.8
-
-env:
-- SCALAENV=jvm
-- SCALAENV=js
-- SCALAENV=all
-- G4SBUILD=docs
-
-matrix:
-  exclude:
-  - scala: 2.11.12
-    env: G4SBUILD=docs
-  - env: SCALAENV=all
-
 jdk:
-- oraclejdk11
+  - oraclejdk11
 
 before_install:
 - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
@@ -28,36 +10,23 @@ before_install:
 - export PATH=${PATH}:./vendor/bundle
 
 install:
-- rvm use 2.3.8 --install --fuzzy
-- gem update --system
+- rvm use 2.6.5 --install --fuzzy
+- yes | gem update --system --force
 - gem install sass
-- gem install ruby_dep -v 1.3.1
-- gem install jekyll -v 3.4.3
-- gem install jekyll-redirect-from
-- nvm install 6
-- nvm use 6
-- node --version
+- gem install jekyll -v 4.0.0
 
-before_script:
-  - sudo chmod +x /usr/local/bin/sbt
-
-script:
-- if [ "$SCALAENV" = "jvm" ]; then
-    sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT validateJVM;
-  elif [ "$SCALAENV" = "js" ]; then
-    sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT compile;
-    sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT validateJS;
-  elif [ "$G4SBUILD" = "docs" ]; then
-    sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT docs/tut;
-  else
-    echo "You might not be invited to the party";
-  fi
+stages:
+- test
+- deploy
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
 
 jobs:
   include:
+    - script:
+        - sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT validate;
+        - sbt ++$TRAVIS_SCALA_VERSION $SBT_JAVA_OPT docs/tut;
     - stage: deploy
       script:
         - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
@@ -73,8 +42,7 @@ jobs:
               sbt docs/publishMicrosite;
             fi
           fi
-      scala: 2.12.8
-      env: SCALAENV=all
+      scala: 2.12.10
 
 before_cache:
   - du -h -d 1 $HOME/.ivy2/cache
