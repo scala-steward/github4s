@@ -1,5 +1,3 @@
-import sbtorgpolicies.runnable.syntax._
-
 pgpPassphrase := Some(getEnvVar("PGP_PASSPHRASE").getOrElse("").toCharArray)
 pgpPublicRing := file(s"$gpgFolder/pubring.gpg")
 pgpSecretRing := file(s"$gpgFolder/secring.gpg")
@@ -49,13 +47,3 @@ lazy val docs = (project in file("docs"))
   .settings(docsDependencies: _*)
   .settings(noPublishSettings: _*)
   .enablePlugins(MicrositesPlugin)
-
-//////////
-// MISC //
-//////////
-
-addCommandAlias("validateDocs", ";project docs;tut;project root")
-addCommandAlias("validateJVM", (toCompileTestList(allModules) ++ List("project root")).asCmd)
-addCommandAlias(
-  "validate",
-  ";clean;compile;coverage;validateJVM;coverageReport;coverageAggregate;coverageOff")
