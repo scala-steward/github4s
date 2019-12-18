@@ -53,7 +53,7 @@ object ProjectPlugin extends AutoPlugin {
         file("CHANGELOG.md") -> ExtraMdFileConfig(
           "changelog.md",
           "page",
-          Map("title" -> "Changelog", "section" -> "home", "position" -> "3")
+          Map("title" -> "Changelog", "section" -> "home", "position" -> "3", "permalink" -> "changelog")
         )
       ),
       micrositeExtraMdFilesOutput := (tutSourceDirectory).value,
