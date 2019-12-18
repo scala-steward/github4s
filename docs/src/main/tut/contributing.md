@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Contributing
-section: contributing
+section: home
 position: 1
 ---
 

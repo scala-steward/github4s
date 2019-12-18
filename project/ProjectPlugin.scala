@@ -53,7 +53,7 @@ object ProjectPlugin extends AutoPlugin {
         file("CHANGELOG.md") -> ExtraMdFileConfig(
           "changelog.md",
           "page",
-          Map("title" -> "Changelog", "section" -> "changelog", "position" -> "2")
+          Map("title" -> "Changelog", "section" -> "home", "position" -> "2")
         )
       ),
       includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
