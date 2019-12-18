@@ -1,5 +1,27 @@
 # Changelog
 
+## 12/18/2019 - Version 0.21.0
+
+Release changes:
+
+* Update mockserver-netty to 5.6.1 ([#281](https://github.com/47deg/github4s/pull/281))
+* Update cats-effect to 2.0.0 ([#282](https://github.com/47deg/github4s/pull/282))
+* Update sbt to 1.3.3 ([#283](https://github.com/47deg/github4s/pull/283))
+* Update scalaz-concurrent to 7.2.29 ([#284](https://github.com/47deg/github4s/pull/284))
+* Mockserver 5.7.2 ([#293](https://github.com/47deg/github4s/pull/293))
+* Specify additional SBT memory settings ([#295](https://github.com/47deg/github4s/pull/295))
+* Updates ([#298](https://github.com/47deg/github4s/pull/298))
+* Update mockserver-netty to 5.8.0 ([#303](https://github.com/47deg/github4s/pull/303))
+* Tagged test as integration ([#301](https://github.com/47deg/github4s/pull/301))
+* 304 migrate unicode arrows ([#305](https://github.com/47deg/github4s/pull/305))
+* Update sbt to 1.3.5 ([#306](https://github.com/47deg/github4s/pull/306))
+* replacing unicode arrows ([#302](https://github.com/47deg/github4s/pull/302))
+* Cross-build Scala 2.13 ([#311](https://github.com/47deg/github4s/pull/311))
+* Release 0.21.0 ([#312](https://github.com/47deg/github4s/pull/312))
+* Upgrades build ([#310](https://github.com/47deg/github4s/pull/310))
+* Removes Scalajs & Scala 2.11 support ([#309](https://github.com/47deg/github4s/pull/309))
+
+
 ## 02/25/2019 - Version 0.20.1
 
 Release changes:
