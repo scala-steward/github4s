@@ -75,7 +75,7 @@ object ProjectPlugin extends AutoPlugin {
         %%("circe-parser", V.circe)  % Test,
         %%("scalamock", V.scalamock) % Test,
         %%("scalatest", V.scalaTest) % Test,
-        "org.mock-server"            % "mockserver-netty" % "5.8.0" % Test excludeAll ExclusionRule(
+        "org.mock-server"            % "mockserver-netty" % "5.8.1" % Test excludeAll ExclusionRule(
           "com.twitter")
       ),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaBinaryVersion.value) match {
