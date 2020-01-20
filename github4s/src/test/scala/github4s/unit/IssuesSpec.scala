@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.list(sampleToken, headerUserAgent, validRepoOwner, validRepoName)
   }
@@ -49,8 +49,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.get(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validIssueNumber)
   }
@@ -65,8 +65,8 @@ class IssuesSpec extends BaseSpec {
       params = Map("q" -> s"+${validSearchParams.map(_.value).mkString("+")}")
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.search(sampleToken, headerUserAgent, "", validSearchParams)
   }
@@ -91,8 +91,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.create(
       sampleToken,
@@ -127,8 +127,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.edit(
       sampleToken,
@@ -153,8 +153,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.listComments(
       sampleToken,
@@ -181,8 +181,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.createComment(
       sampleToken,
@@ -210,8 +210,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.editComment(
       sampleToken,
@@ -232,8 +232,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.deleteComment(
       sampleToken,
@@ -252,8 +252,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.listLabels(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validIssueNumber)
   }
@@ -275,8 +275,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.addLabels(
       sampleToken,
@@ -297,8 +297,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.removeLabel(
       sampleToken,
@@ -318,8 +318,8 @@ class IssuesSpec extends BaseSpec {
       response = response
     )
 
-    val issues = new Issues[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val issues = new Issues[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     issues.listAvailableAssignees(
       sampleToken,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import scala.concurrent.Future
 import scalaj.http.HttpResponse
 
 class IntegrationSpec
-    extends BaseIntegrationSpec[HttpResponse[String]]
+    extends BaseIntegrationSpec
     with GHAuthSpec[HttpResponse[String]]
     with GHGitDataSpec[HttpResponse[String]]
     with GHIssuesSpec[HttpResponse[String]]
@@ -36,11 +36,10 @@ class IntegrationSpec
     with ImplicitsJVM
     with TestUtilsJVM {
 
-  override implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[
-    HttpResponse[String],
-    Future] =
+  override implicit def extension(
+      implicit capture: Capture[Future]): HttpRequestBuilderExtension[Future] =
     extensionJVM[Future]
 
-  override implicit def futureInterpreters: Interpreters[Future, HttpResponse[String]] =
+  override implicit def futureInterpreters: Interpreters[Future] =
     intInstanceFutureScalaJ
 }

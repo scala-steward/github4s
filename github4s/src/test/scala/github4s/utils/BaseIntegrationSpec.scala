@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object Integration
     extends Tag(if (sys.env.get("GITHUB4S_ACCESS_TOKEN").isDefined) "" else classOf[Ignore].getName)
 
-abstract class BaseIntegrationSpec[T]
+abstract class BaseIntegrationSpec
     extends AsyncFlatSpec
     with Matchers
     with Inspectors
@@ -36,8 +36,8 @@ abstract class BaseIntegrationSpec[T]
   override implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  implicit def futureInterpreters: Interpreters[Future, T]
-  implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[T, Future]
+  implicit def futureInterpreters: Interpreters[Future]
+  implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[Future]
 
   def accessToken: Option[String]
 

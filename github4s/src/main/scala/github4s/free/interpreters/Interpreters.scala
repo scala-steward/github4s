@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ trait Capture[M[_]] {
   def capture[A](a: => A): M[A]
 }
 
-class Interpreters[M[_], C](
+class Interpreters[M[_]](
     implicit A: ApplicativeError[M, Throwable],
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   type K[A] = Kleisli[M, Map[String, String], A]
 

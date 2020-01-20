@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,18 +26,19 @@ import github4s.free.interpreters.Capture
 
 trait HttpRequestBuilderExtensionJVM {
 
-  implicit def extensionJVM[M[_]](
-      implicit C: Capture[M]): HttpRequestBuilderExtension[HttpResponse[String], M] =
-    new HttpRequestBuilderExtension[HttpResponse[String], M] {
+  type CC = HttpResponse[String]
 
-      def run[A](rb: HttpRequestBuilder[HttpResponse[String], M])(
-          implicit D: Decoder[A]): M[GHResponse[A]] = runMap[A](rb, decodeEntity[A])
+  implicit def extensionJVM[M[_]](implicit C: Capture[M]): HttpRequestBuilderExtension[M] =
+    new HttpRequestBuilderExtension[M] {
 
-      def runEmpty(rb: HttpRequestBuilder[HttpResponse[String], M]): M[GHResponse[Unit]] =
+      def run[A](rb: HttpRequestBuilder[M])(implicit D: Decoder[A]): M[GHResponse[A]] =
+        runMap[A](rb, decodeEntity[A])
+
+      def runEmpty(rb: HttpRequestBuilder[M]): M[GHResponse[Unit]] =
         runMap[Unit](rb, emptyResponse)
 
       private[this] def runMap[A](
-          rb: HttpRequestBuilder[HttpResponse[String], M],
+          rb: HttpRequestBuilder[M],
           mapResponse: HttpResponse[String] => GHResponse[A]): M[GHResponse[A]] = {
 
         val connTimeoutMs: Int = 1000

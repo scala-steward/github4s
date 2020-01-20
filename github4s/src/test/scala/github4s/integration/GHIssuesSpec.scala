@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import github4s.free.domain.{Issue, Label, SearchIssuesResult, User}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
+trait GHIssuesSpec[T] extends BaseIntegrationSpec {
 
   "Issues >> List" should "return a list of issues" taggedAs Integration in {
     val response = Github(accessToken).issues
       .listIssues(validRepoOwner, validRepoName)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Issue]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -38,7 +38,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "Issues >> Get" should "return an issue which is a PR" ignore {
     val response = Github(accessToken).issues
       .getIssue(validRepoOwner, validRepoName, validPullRequestNumber)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[Issue](response, { r =>
       r.result.body.isEmpty shouldBe true
@@ -49,7 +49,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "Issues >> Search" should "return at least one issue for a valid query" taggedAs Integration in {
     val response = Github(accessToken).issues
       .searchIssues(validSearchQuery, validSearchParams)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[SearchIssuesResult](response, { r =>
       r.result.total_count > 0 shouldBe true
@@ -61,7 +61,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an empty result for a non existent query string" taggedAs Integration in {
     val response = Github(accessToken).issues
       .searchIssues(nonExistentSearchQuery, validSearchParams)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[SearchIssuesResult](response, { r =>
       r.result.total_count shouldBe 0
@@ -82,7 +82,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
         None,
         validIssueLabel,
         validAssignees)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[Issue](response, { r =>
       r.result.state shouldBe validIssueState
@@ -94,7 +94,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "Issues >> ListLabels" should "return a list of labels" taggedAs Integration in {
     val response = Github(accessToken).issues
       .listLabels(validRepoOwner, validRepoName, validIssueNumber)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -105,7 +105,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "Issues >> RemoveLabel" should "return a list of removed labels" taggedAs Integration in {
     val response = Github(accessToken).issues
       .removeLabel(validRepoOwner, validRepoName, validIssueNumber, validIssueLabel.head)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -116,7 +116,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "Issues >> AddLabels" should "return a list of labels" taggedAs Integration in {
     val response = Github(accessToken).issues
       .addLabels(validRepoOwner, validRepoName, validIssueNumber, validIssueLabel)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -127,7 +127,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   "GHIssues >> ListAvailableAssignees" should "return a list of users" taggedAs Integration in {
     val response = Github(accessToken).issues
       .listAvailableAssignees(validRepoOwner, validRepoName)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -138,7 +138,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   it should "return error for an invalid repo owner" taggedAs Integration in {
     val response = Github(accessToken).issues
       .listAvailableAssignees(invalidRepoOwner, validRepoName)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -146,7 +146,7 @@ trait GHIssuesSpec[T] extends BaseIntegrationSpec[T] {
   it should "return error for an invalid repo name" taggedAs Integration in {
     val response = Github(accessToken).issues
       .listAvailableAssignees(validRepoOwner, invalidRepoName)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

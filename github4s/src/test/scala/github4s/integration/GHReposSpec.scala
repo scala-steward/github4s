@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import github4s.free.domain._
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
+trait GHReposSpec[T] extends BaseIntegrationSpec {
 
   "Repos >> Get" should "return the expected name when a valid repo is provided" taggedAs Integration in {
     val response =
       Github(accessToken).repos
         .get(validRepoOwner, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[Repository](response, { r =>
       r.result.name shouldBe validRepoName
@@ -41,7 +41,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .get(validRepoOwner, invalidRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -50,7 +50,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listOrgRepos(validRepoOwner)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Repository]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -62,7 +62,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listOrgRepos(invalidRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -70,7 +70,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
   "Repos >> ListUserRepos" should "return the expected repos when a valid user is provided" taggedAs Integration in {
     val response = Github(accessToken).repos
       .listUserRepos(validUsername)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Repository]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -81,7 +81,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
   it should "return error when an invalid user is passed" taggedAs Integration in {
     val response = Github(accessToken).repos
       .listUserRepos(invalidUsername)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -90,7 +90,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .getContents(validRepoOwner, validRepoName, validFilePath)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[NonEmptyList[Content]](response, { r =>
       r.result.head.path shouldBe validFilePath
@@ -102,7 +102,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .getContents(validRepoOwner, validRepoName, invalidFilePath)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
     testFutureIsLeft(response)
   }
 
@@ -110,7 +110,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listCommits(validRepoOwner, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Commit]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -122,7 +122,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listCommits(invalidRepoName, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -131,7 +131,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listBranches(validRepoOwner, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Branch]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -143,7 +143,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listBranches(invalidRepoName, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -152,7 +152,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listContributors(validRepoOwner, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result shouldNot be(empty)
@@ -164,7 +164,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listContributors(invalidRepoName, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -173,7 +173,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listCollaborators(validRepoOwner, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result shouldNot be(empty)
@@ -185,7 +185,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).repos
         .listCollaborators(invalidRepoName, validRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -193,7 +193,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
   "Repos >> GetStatus" should "return a combined status" taggedAs Integration in {
     val response = Github(accessToken).repos
       .getCombinedStatus(validRepoOwner, validRepoName, validRefSingle)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[CombinedStatus](response, { r =>
       r.result.repository.full_name shouldBe s"$validRepoOwner/$validRepoName"
@@ -204,14 +204,14 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an error when an invalid ref is passed" taggedAs Integration in {
     val response = Github(accessToken).repos
       .getCombinedStatus(validRepoOwner, validRepoName, invalidRef)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
     testFutureIsLeft(response)
   }
 
   "Repos >> ListStatus" should "return a non empty list when a valid ref is provided" taggedAs Integration in {
     val response = Github(accessToken).repos
       .listStatuses(validRepoOwner, validRepoName, validCommitSha)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Status]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -222,7 +222,7 @@ trait GHReposSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an error when an invalid ref is provided" taggedAs Integration in {
     val response = Github(accessToken).repos
       .listStatuses(validRepoOwner, validRepoName, invalidRef)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
     testFutureIsLeft(response)
   }
 }

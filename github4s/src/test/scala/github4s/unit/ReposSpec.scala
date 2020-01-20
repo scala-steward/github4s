@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.get(
       sampleToken,
@@ -57,8 +57,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.listOrgRepos(
       sampleToken,
@@ -77,8 +77,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.listUserRepos(
       sampleToken,
@@ -98,8 +98,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.getContents(
       accessToken = sampleToken,
@@ -131,8 +131,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.createRelease(
       accessToken = sampleToken,
@@ -158,8 +158,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     repos.listCommits(
@@ -179,8 +179,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     repos.listBranches(
@@ -201,8 +201,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     repos.listBranches(
@@ -224,8 +224,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     repos.listContributors(
@@ -246,8 +246,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     repos.listCollaborators(
@@ -267,8 +267,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.getStatus(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validRefSingle)
   }
@@ -281,8 +281,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.listStatuses(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validRefSingle)
   }
@@ -296,8 +296,8 @@ class ReposSpec extends BaseSpec {
       response = response
     )
 
-    val repos = new Repos[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val repos = new Repos[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     repos.createStatus(
       sampleToken,

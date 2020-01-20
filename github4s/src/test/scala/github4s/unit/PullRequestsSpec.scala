@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ class PullRequestsSpec extends BaseSpec {
       url = s"repos/$validRepoOwner/$validRepoName/pulls/$validPullRequestNumber",
       response = response
     )
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     pullRequests.get(
       sampleToken,
@@ -54,8 +54,8 @@ class PullRequestsSpec extends BaseSpec {
       url = s"repos/$validRepoOwner/$validRepoName/pulls",
       response = response
     )
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     pullRequests.list(sampleToken, headerUserAgent, validRepoOwner, validRepoName, Nil)
   }
@@ -69,8 +69,8 @@ class PullRequestsSpec extends BaseSpec {
       url = s"repos/$validRepoOwner/$validRepoName/pulls/$validPullRequestNumber/files",
       response = response
     )
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     pullRequests
       .listFiles(
@@ -102,8 +102,8 @@ class PullRequestsSpec extends BaseSpec {
       response = response
     )
 
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     pullRequests.create(
@@ -137,8 +137,8 @@ class PullRequestsSpec extends BaseSpec {
       response = response
     )
 
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     pullRequests.create(
@@ -162,8 +162,8 @@ class PullRequestsSpec extends BaseSpec {
       response = response
     )
 
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     pullRequests.listReviews(
@@ -185,8 +185,8 @@ class PullRequestsSpec extends BaseSpec {
       response = response
     )
 
-    val pullRequests = new PullRequests[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val pullRequests = new PullRequests[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     pullRequests.getReview(

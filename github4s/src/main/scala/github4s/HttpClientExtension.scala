@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import io.circe.Decoder
 
 import scala.language.higherKinds
 
-trait HttpRequestBuilderExtension[C, M[_]] {
-  def run[A](rb: HttpRequestBuilder[C, M])(implicit D: Decoder[A]): M[GHResponse[A]]
+trait HttpRequestBuilderExtension[M[_]] {
+  def run[A](rb: HttpRequestBuilder[M])(implicit D: Decoder[A]): M[GHResponse[A]]
 
-  def runEmpty(rb: HttpRequestBuilder[C, M]): M[GHResponse[Unit]]
+  def runEmpty(rb: HttpRequestBuilder[M]): M[GHResponse[Unit]]
 }

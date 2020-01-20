@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import github4s.free.domain.User
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
+trait GHOrganizationsSpec[T] extends BaseIntegrationSpec {
 
   "Organization >> ListMembers" should "return the expected list of users" taggedAs Integration in {
     val response =
       Github(accessToken).organizations
         .listMembers(validRepoOwner)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -40,7 +40,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listMembers(invalidUsername)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -49,7 +49,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listOutsideCollaborators(validOrganizationName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -61,7 +61,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listOutsideCollaborators(invalidOrganizationName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ class ActivitiesSpec extends BaseSpec {
       response = response
     )
 
-    val activities = new Activities[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val activities = new Activities[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     activities.setThreadSub(sampleToken, headerUserAgent, validThreadId, true, false)
   }
@@ -59,8 +59,8 @@ class ActivitiesSpec extends BaseSpec {
       response = response
     )
 
-    val activities = new Activities[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val activities = new Activities[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     activities.listStargazers(sampleToken, headerUserAgent, validRepoOwner, validRepoName, false)
   }
@@ -75,8 +75,8 @@ class ActivitiesSpec extends BaseSpec {
       response = response
     )
 
-    val activities = new Activities[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val activities = new Activities[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     activities.listStarredRepositories(sampleToken, headerUserAgent, validUsername, false)
   }

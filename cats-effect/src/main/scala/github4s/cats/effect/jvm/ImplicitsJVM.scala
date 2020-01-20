@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 47 Degrees, LLC. <http://www.47deg.com>
+ * Copyright 2016-2020 47 Degrees, LLC. <http://www.47deg.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,5 @@ import github4s.implicits._
 import scalaj.http.HttpResponse
 
 trait ImplicitsJVM extends HttpRequestBuilderExtensionJVM with SyncCaptureInstance {
-  implicit def intInstanceSyncScalaJ[F[_]: Sync] =
-    new Interpreters[F, HttpResponse[String]]
+  implicit def intInstanceSyncScalaJ[F[_]: Sync] = new Interpreters[F]
 }
