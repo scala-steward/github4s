@@ -23,7 +23,7 @@ import github4s.free.domain.{Ref, RefCommit, TreeResult}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHGitDataSpec[T] extends BaseIntegrationSpec {
+trait GHGitDataSpec extends BaseIntegrationSpec {
 
   "GitData >> GetReference" should "return a list of references" taggedAs Integration in {
     val response = Github(accessToken).gitData

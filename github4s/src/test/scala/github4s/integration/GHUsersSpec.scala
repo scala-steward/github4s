@@ -22,7 +22,7 @@ import github4s.free.domain.User
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHUsersSpec[T] extends BaseIntegrationSpec {
+trait GHUsersSpec extends BaseIntegrationSpec {
 
   "Users >> Get" should "return the expected login for a valid username" taggedAs Integration in {
     val response =

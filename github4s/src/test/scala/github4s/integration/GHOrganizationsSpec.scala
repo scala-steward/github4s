@@ -22,7 +22,7 @@ import github4s.free.domain.User
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHOrganizationsSpec[T] extends BaseIntegrationSpec {
+trait GHOrganizationsSpec extends BaseIntegrationSpec {
 
   "Organization >> ListMembers" should "return the expected list of users" taggedAs Integration in {
     val response =

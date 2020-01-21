@@ -22,7 +22,7 @@ import github4s.free.domain.Authorize
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHAuthSpec[T] extends BaseIntegrationSpec {
+trait GHAuthSpec extends BaseIntegrationSpec {
 
   "Auth >> NewAuth" should "return error on Left when invalid credential is provided" taggedAs Integration in {
 

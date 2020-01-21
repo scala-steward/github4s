@@ -22,17 +22,16 @@ import github4s.jvm.ImplicitsJVM
 import github4s.utils.{BaseIntegrationSpec, TestUtilsJVM}
 
 import scala.concurrent.Future
-import scalaj.http.HttpResponse
 
 class IntegrationSpec
     extends BaseIntegrationSpec
-    with GHAuthSpec[HttpResponse[String]]
-    with GHGitDataSpec[HttpResponse[String]]
-    with GHIssuesSpec[HttpResponse[String]]
-    with GHPullRequestsSpec[HttpResponse[String]]
-    with GHReposSpec[HttpResponse[String]]
-    with GHUsersSpec[HttpResponse[String]]
-    with GHActivitiesSpec[HttpResponse[String]]
+    with GHAuthSpec
+    with GHGitDataSpec
+    with GHIssuesSpec
+    with GHPullRequestsSpec
+    with GHReposSpec
+    with GHUsersSpec
+    with GHActivitiesSpec
     with ImplicitsJVM
     with TestUtilsJVM {
 

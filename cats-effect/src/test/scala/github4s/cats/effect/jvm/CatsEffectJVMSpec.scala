@@ -33,7 +33,7 @@ class CatsEffectJVMSpec extends AnyFlatSpec with Matchers {
 
   "cats-effect jvm integration" should "return a succeded result for a valid call" in {
     val response =
-      Github(accessToken).users.get(validUsername).exec[IO, HttpResponse[String]](headerUserAgent)
+      Github(accessToken).users.get(validUsername).exec[IO](headerUserAgent)
 
     val res = response.unsafeRunSync
     res.isRight shouldBe true
@@ -44,7 +44,7 @@ class CatsEffectJVMSpec extends AnyFlatSpec with Matchers {
     val response =
       Github(accessToken).users
         .get(invalidUsername)
-        .exec[IO, HttpResponse[String]](headerUserAgent)
+        .exec[IO](headerUserAgent)
 
     val res = response.unsafeRunSync
     res.isLeft shouldBe true

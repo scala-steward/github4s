@@ -22,7 +22,7 @@ import github4s.free.domain.{Issue, Label, SearchIssuesResult, User}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHIssuesSpec[T] extends BaseIntegrationSpec {
+trait GHIssuesSpec extends BaseIntegrationSpec {
 
   "Issues >> List" should "return a list of issues" taggedAs Integration in {
     val response = Github(accessToken).issues

@@ -22,7 +22,7 @@ import github4s.free.domain._
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHPullRequestsSpec[T] extends BaseIntegrationSpec {
+trait GHPullRequestsSpec extends BaseIntegrationSpec {
 
   "PullRequests >> Get" should "return a right response when a valid pr number is provided" taggedAs Integration in {
     val response =

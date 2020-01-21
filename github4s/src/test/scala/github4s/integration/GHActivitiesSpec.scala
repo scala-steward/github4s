@@ -22,7 +22,7 @@ import github4s.free.domain.{Stargazer, StarredRepository, Subscription}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHActivitiesSpec[T] extends BaseIntegrationSpec {
+trait GHActivitiesSpec extends BaseIntegrationSpec {
 
   "Activity >> Set a thread subscription" should "return expected response when a valid thread id is provided" taggedAs Integration in {
     val response =
