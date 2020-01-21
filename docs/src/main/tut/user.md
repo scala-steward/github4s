@@ -38,7 +38,7 @@ You can get a user using `get`, it takes as argument:
 
 ```tut:silent
 val getUser = Github(accessToken).users.get("rafaparadela")
-getUser.exec[cats.Id, HttpResponse[String]]() match {
+getUser.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -57,7 +57,7 @@ You can get an authenticated user using `getAuth`:
 
 ```tut:silent
 val getAuth = Github(accessToken).users.getAuth
-getAuth.exec[cats.Id, HttpResponse[String]]() match {
+getAuth.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -77,7 +77,7 @@ You can get a list of users using `getUsers`, it takes as arguments:
 
 ```tut:silent
 val getUsers = Github(accessToken).users.getUsers(1)
-getUsers.exec[cats.Id, HttpResponse[String]]() match {
+getUsers.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -101,7 +101,7 @@ You can get a list of users followed by another user using `getFollowing`, it ta
 
 ```tut:silent
 val getUser = Github(accessToken).users.getFollowing("rafaparadela")
-getUser.exec[cats.Id, HttpResponse[String]]() match {
+getUser.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

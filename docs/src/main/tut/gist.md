@@ -47,7 +47,7 @@ val files = Map(
 )
 val newGist = Github(accessToken).gists.newGist("Github4s entry point", public = true, files)
 
-newGist.exec[cats.Id, HttpResponse[String]]() match {
+newGist.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -69,7 +69,7 @@ To get a single gist:
 ```scala
 val singleGist = Github(accessToken).gists.getGist("aa5a315d61ae9438b18d")
 
-singleGist.exec[cats.Id, HttpResponse[String]]() match {
+singleGist.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -80,7 +80,7 @@ Similarly, to get a specific revision of a gist:
 ```scala
 val sepcificRevisionGist = Github(accessToken).gists.getGist("aa5a315d61ae9438b18d", Some("4e481528046a016fc11d6e7d8d623b55ea11e372"))
 
-sepcificRevisionGist.exec[cats.Id, HttpResponse[String]]() match {
+sepcificRevisionGist.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -111,7 +111,7 @@ val files = Map(
 
 val updatedGist = Github(accessToken).gists.editGist("aa5a315d61ae9438b18d", "Updated github4s entry point", files)
 
-updatedGist.exec[cats.Id, HttpResponse[String]]() match {
+updatedGist.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

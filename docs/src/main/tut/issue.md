@@ -55,7 +55,7 @@ To create an issue:
 val createIssue =
   Github(accessToken).issues.createIssue("47deg", "github4s", "Github4s", "is awesome")
 
-createIssue.exec[cats.Id, HttpResponse[String]]() match {
+createIssue.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -83,7 +83,7 @@ To edit an issue:
 val editIssue =
   Github(accessToken).issues.editIssue("47deg", "github4s", 1, "open", "Github4s", "is still awesome")
 
-editIssue.exec[cats.Id, HttpResponse[String]]() match {
+editIssue.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -105,7 +105,7 @@ To list the issues for a repository:
 ```tut:silent
 val listIssues = Github(accessToken).issues.listIssues("47deg", "github4s")
 
-listIssues.exec[cats.Id, HttpResponse[String]]() match {
+listIssues.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -129,7 +129,7 @@ To get a single issue from a repository:
 ```tut:silent
 val issue = Github(accessToken).issues.getIssue("47deg", "github4s", 123)
 
-issue.exec[cats.Id, HttpResponse[String]]() match {
+issue.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -161,7 +161,7 @@ val searchParams = List(
 )
 val searchIssues = Github(accessToken).issues.searchIssues("existential", searchParams)
 
-searchIssues.exec[cats.Id, HttpResponse[String]]() match {
+searchIssues.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -184,7 +184,7 @@ You can list comments of an issue with the following parameters:
 
 ```tut:silent
 val commentList = Github(accessToken).issues.listComments("47deg", "github4s", 123)
-commentList.exec[cats.Id, HttpResponse[String]]() match {
+commentList.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -206,7 +206,7 @@ You can create a comment for an issue with the following parameters:
 
 ```scala
 val createcomment = Github(accessToken).issues.create("47deg", "github4s", 123, "this is the comment")
-createcomment.exec[cats.Id, HttpResponse[String]]() match {
+createcomment.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -229,7 +229,7 @@ You can edit a comment from an issue with the following parameters:
 
 ```scala
 val editComment = Github(accessToken).issues.edit("47deg", "github4s", 20, "this is the new comment")
-editComment.exec[cats.Id, HttpResponse[String]]() match {
+editComment.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -251,7 +251,7 @@ You can delete a comment from an issue with the following parameters:
 
 ```scala
 val deleteComment = Github(accessToken).issues.delete("47deg", "github4s", 20)
-deleteComment.exec[cats.Id, HttpResponse[String]]() match {
+deleteComment.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -274,7 +274,7 @@ You can list labels for an issue with the following parameters:
 
 ```tut:silent
 val labelList = Github(accessToken).issues.listLabels("47deg", "github4s", 123)
-labelList.exec[cats.Id, HttpResponse[String]]() match {
+labelList.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -296,7 +296,7 @@ You can add existing labels to an issue with the following parameters:
 
 ```tut:silent
 val assignedLabelList = Github(accessToken).issues.addLabels("47deg", "github4s", 123, List("bug", "code review"))
-assignedLabelList.exec[cats.Id, HttpResponse[String]]() match {
+assignedLabelList.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -318,7 +318,7 @@ You can remove a label from an issue with the following parameters:
 
 ```tut:silent
 val removedLabelList = Github(accessToken).issues.removeLabel("47deg", "github4s", 123, "bug")
-removedLabelList.exec[cats.Id, HttpResponse[String]]() match {
+removedLabelList.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -341,7 +341,7 @@ You can list available assignees for issues in repo with the following parameter
 
 ```tut:silent
 val assignees = Github(accessToken).issues.listAvailableAssignees("47deg", "github4s")
-assignees.exec[cats.Id, HttpResponse[String]]() match {
+assignees.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

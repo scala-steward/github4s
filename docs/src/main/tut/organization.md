@@ -45,7 +45,7 @@ To list the members for organization `47deg`:
 
 ```tut:silent
 val listMembers = Github(accessToken).organizations.listMembers("47deg")
-listMembers.exec[cats.Id, HttpResponse[String]]() match {
+listMembers.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -69,7 +69,7 @@ To list the outside collaborators for organization `47deg`:
 
 ```tut:silent
 val outsideCollaborators = Github(accessToken).organizations.listOutsideCollaborators("47deg")
-outsideCollaborators.exec[cats.Id, HttpResponse[String]]() match {
+outsideCollaborators.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

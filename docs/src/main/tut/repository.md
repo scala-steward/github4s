@@ -56,7 +56,7 @@ To get a repository:
 val getRepo =
   Github(accessToken).repos.get("47deg", "github4s")
 
-getRepo.exec[cats.Id, HttpResponse[String]]() match {
+getRepo.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -82,7 +82,7 @@ To list the repositories for an organization:
 ```tut:silent
 val listOrgRepos = Github(accessToken).repos.listOrgRepos("47deg")
 
-listOrgRepos.exec[cats.Id, HttpResponse[String]]() match {
+listOrgRepos.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -107,7 +107,7 @@ To list the repositories for a user:
 ```tut:silent
 val listUserRepos = Github(accessToken).repos.listUserRepos("rafaparadela")
 
-listUserRepos.exec[cats.Id, HttpResponse[String]]() match {
+listUserRepos.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -134,7 +134,7 @@ To list contributors:
 val listContributors =
   Github(accessToken).repos.listContributors("47deg", "github4s", Some("true"))
 
-listContributors.exec[cats.Id, HttpResponse[String]]() match {
+listContributors.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -159,7 +159,7 @@ For more information take a look at [the API doc](https://developer.github.com/v
 val listCollaborators =
   Github(accessToken).repos.listCollaborators("47deg", "github4s", Some("all"))
 
-listCollaborators.exec[cats.Id, HttpResponse[String]]() match {
+listCollaborators.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -197,7 +197,7 @@ val listCommits =
   Some("2014-11-07T22:01:45Z"),
   Some("2014-11-07T22:01:45Z"))
 
-listCommits.exec[cats.Id, HttpResponse[String]]() match {
+listCommits.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -225,7 +225,7 @@ val listBranches =
   "47deg",
   "github4s")
 
-listBranches.exec[cats.Id, HttpResponse[String]]() match {
+listBranches.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -253,7 +253,7 @@ To get contents:
 val getContents =
   Github(accessToken).repos.getContents("47deg", "github4s", "README.md", Some("heads/master"))
 
-getContents.exec[cats.Id, HttpResponse[String]]() match {
+getContents.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -285,7 +285,7 @@ To create a release:
 val createRelease =
   Github(accessToken).repos.createRelease("47deg", "github4s", "v0.1.0", "v0.1.0", "New access token", Some("master"), Some(false), Some(false))
 
-createRelease.exec[cats.Id, HttpResponse[String]]() match {
+createRelease.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -313,7 +313,7 @@ To create a status:
 val createStatus =
   Github(accessToken).repos.createStatus("47deg", "github4s", "aaaaaa", "pending")
 
-createStatus.exec[cats.Id, HttpResponse[String]]() match {
+createStatus.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -337,7 +337,7 @@ To list the statuses for a specific ref:
 val listStatuses =
   Github(accessToken).repos.listStatuses("47deg", "github4s", "heads/master")
 
-listStatuses.exec[cats.Id, HttpResponse[String]]() match {
+listStatuses.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -357,7 +357,7 @@ arguments as the operation listing statuses:
 val combinedStatus =
   Github(accessToken).repos.getCombinedStatus("47deg", "github4s", "heads/master")
 
-combinedStatus.exec[cats.Id, HttpResponse[String]]() match {
+combinedStatus.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

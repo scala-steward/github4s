@@ -375,7 +375,7 @@ To list the statuses for a specific ref:
 val listStatuses =
   Github(accessToken).repos.listStatuses("47deg", "github4s", "heads/master")
 
-listStatuses.exec[cats.Id, HttpResponse[String]]() match {
+listStatuses.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
