@@ -26,8 +26,6 @@ import github4s.free.interpreters.Capture
 
 trait HttpRequestBuilderExtensionJVM {
 
-  type CC = HttpResponse[String]
-
   implicit def extensionJVM[M[_]](implicit C: Capture[M]): HttpRequestBuilderExtension[M] =
     new HttpRequestBuilderExtension[M] {
 
