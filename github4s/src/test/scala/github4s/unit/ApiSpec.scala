@@ -35,15 +35,15 @@ class ApiSpec
     with DummyGithubUrls
     with ImplicitsJVM {
 
-  val auth          = new Auth[HttpResponse[String], Id]
-  val repos         = new Repos[HttpResponse[String], Id]
-  val users         = new Users[HttpResponse[String], Id]
-  val gists         = new Gists[HttpResponse[String], Id]
-  val gitData       = new GitData[HttpResponse[String], Id]
-  val pullRequests  = new PullRequests[HttpResponse[String], Id]
-  val issues        = new Issues[HttpResponse[String], Id]
-  val activities    = new Activities[HttpResponse[String], Id]
-  val organizations = new Organizations[HttpResponse[String], Id]
+  val auth          = new Auth[Id]
+  val repos         = new Repos[Id]
+  val users         = new Users[Id]
+  val gists         = new Gists[Id]
+  val gitData       = new GitData[Id]
+  val pullRequests  = new PullRequests[Id]
+  val issues        = new Issues[Id]
+  val activities    = new Activities[Id]
+  val organizations = new Organizations[Id]
 
   "Auth >> NewAuth" should "return a valid token when valid credential is provided" in {
     val response = auth.newAuth(

@@ -29,15 +29,15 @@ import scala.language.higherKinds
 /**
  * Factory that encapsulates all the Git Database API calls
  */
-class GitData[C, M[_]](
+class GitData[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._
   import Encoders._
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * Get a Reference by name

@@ -25,12 +25,12 @@ import io.circe.syntax._
 import io.circe.generic.auto._
 
 /** Factory to encapsulate calls related to Issues operations  */
-class Issues[C, M[_]](
+class Issues[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * List issues for a repository

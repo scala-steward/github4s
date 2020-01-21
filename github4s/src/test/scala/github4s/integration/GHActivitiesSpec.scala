@@ -22,13 +22,13 @@ import github4s.free.domain.{Stargazer, StarredRepository, Subscription}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
+trait GHActivitiesSpec extends BaseIntegrationSpec {
 
   "Activity >> Set a thread subscription" should "return expected response when a valid thread id is provided" taggedAs Integration in {
     val response =
       Github(accessToken).activities
         .setThreadSub(validThreadId, true, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[Subscription](response, { r =>
       r.statusCode shouldBe okStatusCode
@@ -39,7 +39,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .setThreadSub(invalidThreadId, true, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -48,7 +48,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStargazers(validRepoOwner, validRepoName, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Stargazer]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -63,7 +63,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStargazers(validRepoOwner, validRepoName, true)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[Stargazer]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -78,7 +78,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStargazers(invalidRepoName, validRepoName, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -87,7 +87,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStarredRepositories(validUsername, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[StarredRepository]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -102,7 +102,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStarredRepositories(validUsername, true)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[StarredRepository]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -117,7 +117,7 @@ trait GHActivitiesSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).activities
         .listStarredRepositories(invalidUsername, false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

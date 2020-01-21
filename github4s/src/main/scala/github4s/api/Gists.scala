@@ -26,13 +26,13 @@ import github4s.Encoders.encodeEditGistFile
 import scala.language.higherKinds
 
 /** Factory to encapsulate calls related to Repositories operations  */
-class Gists[C, M[_]](
+class Gists[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
   import Decoders._
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * Create a new gist

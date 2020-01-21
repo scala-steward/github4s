@@ -32,10 +32,10 @@ trait Capture[M[_]] {
   def capture[A](a: => A): M[A]
 }
 
-class Interpreters[M[_], C](
+class Interpreters[M[_]](
     implicit A: ApplicativeError[M, Throwable],
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   type K[A] = Kleisli[M, Map[String, String], A]
 

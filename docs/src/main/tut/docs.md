@@ -64,7 +64,7 @@ import github4s.Github._
 import scalaj.http.HttpResponse
 
 object ProgramEval {
-  val u1 = user1.exec[Eval, HttpResponse[String]]().value
+  val u1 = user1.exec[Eval]().value
 }
 ```
 
@@ -86,7 +86,7 @@ ProgramEval.u1 match {
 import cats.Id
 
 object ProgramId {
-  val u2 = Github(accessToken).users.get("raulraja").exec[Id, HttpResponse[String]]()
+  val u2 = Github(accessToken).users.get("raulraja").exec[Id]()
 }
 ```
 
@@ -100,7 +100,7 @@ import scala.concurrent.Await
 
 object ProgramFuture {
   // execFuture[C] is a shortcut for exec[Future, C]
-  val u3 = Github(accessToken).users.get("dialelo").execFuture[HttpResponse[String]]()
+  val u3 = Github(accessToken).users.get("dialelo").execFuture()
   Await.result(u3, 2.seconds)
 }
 ```
@@ -113,7 +113,7 @@ import cats.effect.IO
 import github4s.cats.effect.jvm.Implicits._
 
 object ProgramTask {
-  val u5 = Github(accessToken).users.get("juanpedromoreno").exec[IO, HttpResponse[String]]()
+  val u5 = Github(accessToken).users.get("juanpedromoreno").exec[IO]()
   u5.unsafeRunSync
 }
 ```
@@ -128,7 +128,7 @@ The different `exec` methods let users include custom headers for any Github API
 ```tut:silent
 object ProgramEval {
   val userHeaders = Map("user-agent" -> "github4s")
-  val user1 = Github(accessToken).users.get("rafaparadela").exec[Eval, HttpResponse[String]](userHeaders).value
+  val user1 = Github(accessToken).users.get("rafaparadela").exec[Eval](userHeaders).value
 }
 ```
 

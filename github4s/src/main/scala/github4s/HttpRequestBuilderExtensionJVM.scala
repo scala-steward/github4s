@@ -26,18 +26,17 @@ import github4s.free.interpreters.Capture
 
 trait HttpRequestBuilderExtensionJVM {
 
-  implicit def extensionJVM[M[_]](
-      implicit C: Capture[M]): HttpRequestBuilderExtension[HttpResponse[String], M] =
-    new HttpRequestBuilderExtension[HttpResponse[String], M] {
+  implicit def extensionJVM[M[_]](implicit C: Capture[M]): HttpRequestBuilderExtension[M] =
+    new HttpRequestBuilderExtension[M] {
 
-      def run[A](rb: HttpRequestBuilder[HttpResponse[String], M])(
-          implicit D: Decoder[A]): M[GHResponse[A]] = runMap[A](rb, decodeEntity[A])
+      def run[A](rb: HttpRequestBuilder[M])(implicit D: Decoder[A]): M[GHResponse[A]] =
+        runMap[A](rb, decodeEntity[A])
 
-      def runEmpty(rb: HttpRequestBuilder[HttpResponse[String], M]): M[GHResponse[Unit]] =
+      def runEmpty(rb: HttpRequestBuilder[M]): M[GHResponse[Unit]] =
         runMap[Unit](rb, emptyResponse)
 
       private[this] def runMap[A](
-          rb: HttpRequestBuilder[HttpResponse[String], M],
+          rb: HttpRequestBuilder[M],
           mapResponse: HttpResponse[String] => GHResponse[A]): M[GHResponse[A]] = {
 
         val connTimeoutMs: Int = 1000

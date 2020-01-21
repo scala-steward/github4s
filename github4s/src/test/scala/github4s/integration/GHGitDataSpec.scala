@@ -23,12 +23,12 @@ import github4s.free.domain.{Ref, RefCommit, TreeResult}
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
+trait GHGitDataSpec extends BaseIntegrationSpec {
 
   "GitData >> GetReference" should "return a list of references" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getReference(validRepoOwner, validRepoName, "heads")
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[NonEmptyList[Ref]](response, { r =>
       r.result.tail.nonEmpty shouldBe true
@@ -39,7 +39,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
   it should "return at least one reference" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getReference(validRepoOwner, validRepoName, validRefSingle)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[NonEmptyList[Ref]](response, { r =>
       r.result.head.ref.contains(validRefSingle) shouldBe true
@@ -50,7 +50,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getReference(validRepoOwner, invalidRepoName, validRefSingle)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -58,7 +58,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
   "GitData >> GetCommit" should "return one commit" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getCommit(validRepoOwner, validRepoName, validCommitSha)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsRight[RefCommit](response, { r =>
       r.result.message shouldBe validCommitMsg
@@ -69,7 +69,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getCommit(validRepoOwner, invalidRepoName, validCommitSha)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -78,7 +78,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).gitData
         .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = false)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[TreeResult](
       response, { r =>
@@ -93,7 +93,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).gitData
         .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = true)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[TreeResult](
       response, { r =>
@@ -111,7 +111,7 @@ trait GHGitDataSpec[T] extends BaseIntegrationSpec[T] {
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
     val response = Github(accessToken).gitData
       .getTree(validRepoOwner, invalidRepoName, validCommitSha, recursive = false)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

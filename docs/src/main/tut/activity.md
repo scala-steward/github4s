@@ -47,7 +47,7 @@ You can subscribe or unsubscribe using `setThreadSub`; it takes as arguments:
 
 ```scala
 val threadSub = Github(accessToken).activities.setThreadSub(5, true, false)
-threadSub.exec[cats.Id, HttpResponse[String]]() match {
+threadSub.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -71,7 +71,7 @@ To list the stargazers of 47deg/github4s:
 
 ```tut:silent
 val listStargazers = Github(accessToken).activities.listStargazers("47deg", "github4s", true)
-listStargazers.exec[cats.Id, HttpResponse[String]]() match {
+listStargazers.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -98,7 +98,7 @@ To list the starred repositories for user `rafaparadela`:
 
 ```tut:silent
 val listStarredRepositories = Github(accessToken).activities.listStarredRepositories("rafaparadela", true)
-listStarredRepositories.exec[cats.Id, HttpResponse[String]]() match {
+listStarredRepositories.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

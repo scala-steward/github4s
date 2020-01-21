@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object Integration
     extends Tag(if (sys.env.get("GITHUB4S_ACCESS_TOKEN").isDefined) "" else classOf[Ignore].getName)
 
-abstract class BaseIntegrationSpec[T]
+abstract class BaseIntegrationSpec
     extends AsyncFlatSpec
     with Matchers
     with Inspectors
@@ -36,8 +36,8 @@ abstract class BaseIntegrationSpec[T]
   override implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  implicit def futureInterpreters: Interpreters[Future, T]
-  implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[T, Future]
+  implicit def futureInterpreters: Interpreters[Future]
+  implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[Future]
 
   def accessToken: Option[String]
 

@@ -48,8 +48,8 @@ class AuthSpec extends BaseSpec {
       response = response
     )
 
-    val auth = new Auth[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val auth = new Auth[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     auth.newAuth(
@@ -83,8 +83,8 @@ class AuthSpec extends BaseSpec {
       response = response
     )
 
-    val auth = new Auth[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val auth = new Auth[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     auth.getAccessToken(

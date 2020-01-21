@@ -36,8 +36,8 @@ class GitDataSpec extends BaseSpec {
       response = response
     )
 
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.reference(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validRefSingle)
   }
@@ -59,8 +59,8 @@ class GitDataSpec extends BaseSpec {
       response = response
     )
 
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.createReference(
       sampleToken,
@@ -90,8 +90,8 @@ class GitDataSpec extends BaseSpec {
       response = response
     )
 
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.updateReference(
       sampleToken,
@@ -111,8 +111,8 @@ class GitDataSpec extends BaseSpec {
       url = s"repos/$validRepoOwner/$validRepoName/git/commits/$validCommitSha",
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gitData.commit(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validCommitSha)
@@ -140,8 +140,8 @@ class GitDataSpec extends BaseSpec {
       json = request,
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.createCommit(
       sampleToken,
@@ -170,8 +170,8 @@ class GitDataSpec extends BaseSpec {
       json = request,
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.createBlob(
       sampleToken,
@@ -194,8 +194,8 @@ class GitDataSpec extends BaseSpec {
       url = s"repos/$validRepoOwner/$validRepoName/git/trees/$validCommitSha",
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gitData.tree(
@@ -241,8 +241,8 @@ class GitDataSpec extends BaseSpec {
       json = request,
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.createTree(
       sampleToken,
@@ -275,8 +275,8 @@ class GitDataSpec extends BaseSpec {
       json = request,
       response = response
     )
-    val gitData = new GitData[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gitData = new GitData[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     gitData.createTag(
       sampleToken,

@@ -36,22 +36,22 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     override def equals(argument: Any): Boolean = parse(json) == parse(argument.toString)
   }
 
-  class HttpClientTest extends HttpClient[String, Id]
+  class HttpClientTest extends HttpClient[Id]
 
-  implicit def httpRequestBuilderExtension: HttpRequestBuilderExtension[String, Id] =
-    new HttpRequestBuilderExtension[String, Id] {
-      override def run[A](rb: HttpRequestBuilder[String, Id])(
+  implicit def httpRequestBuilderExtension: HttpRequestBuilderExtension[Id] =
+    new HttpRequestBuilderExtension[Id] {
+      override def run[A](rb: HttpRequestBuilder[Id])(
           implicit D: circe.Decoder[A]): Id[GHResponse[A]] =
         Left(UnexpectedException("Stub!"))
 
-      override def runEmpty(rb: HttpRequestBuilder[String, Id]): Id[GHResponse[Unit]] =
+      override def runEmpty(rb: HttpRequestBuilder[Id]): Id[GHResponse[Unit]] =
         Left(UnexpectedException("Stub!"))
     }
 
   def httpClientMockGet[T](
       url: String,
       params: Map[String, String] = Map.empty,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+      response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .get[T](
@@ -65,10 +65,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     httpClientMock
   }
 
-  def httpClientMockPost[T](
-      url: String,
-      json: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+  def httpClientMockPost[T](url: String, json: String, response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .post[T](_: Option[String], _: String, _: Map[String, String], _: String)(_: Decoder[T]))
@@ -81,7 +78,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
       url: String,
       headers: Map[String, String],
       json: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+      response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .postAuth[T](_: String, _: Map[String, String], _: String)(_: Decoder[T]))
@@ -93,7 +90,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
   def httpClientMockPostOAuth[T](
       url: String,
       json: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+      response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .postOAuth[T](_: String, _: Map[String, String], _: String)(_: Decoder[T]))
@@ -102,10 +99,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     httpClientMock
   }
 
-  def httpClientMockPatch[T](
-      url: String,
-      json: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+  def httpClientMockPatch[T](url: String, json: String, response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .patch[T](_: Option[String], _: String, _: Map[String, String], _: String)(_: Decoder[T]))
@@ -114,10 +108,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     httpClientMock
   }
 
-  def httpClientMockPut[T](
-      url: String,
-      json: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+  def httpClientMockPut[T](url: String, json: String, response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .put[T](_: Option[String], _: String, _: Map[String, String], _: String)(_: Decoder[T]))
@@ -126,7 +117,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     httpClientMock
   }
 
-  def httpClientMockDelete(url: String, response: GHResponse[Unit]): HttpClient[String, Id] = {
+  def httpClientMockDelete(url: String, response: GHResponse[Unit]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .delete(_: Option[String], _: String, _: Map[String, String]))
@@ -135,9 +126,7 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with IdInstances 
     httpClientMock
   }
 
-  def httpClientMockDeleteWithResponse[T](
-      url: String,
-      response: GHResponse[T]): HttpClient[String, Id] = {
+  def httpClientMockDeleteWithResponse[T](url: String, response: GHResponse[T]): HttpClient[Id] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
       .deleteWithResponse[T](_: Option[String], _: String, _: Map[String, String])(_: Decoder[T]))

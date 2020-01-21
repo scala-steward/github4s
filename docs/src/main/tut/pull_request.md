@@ -48,7 +48,7 @@ To get a single pull request:
 ```tut:silent
 val getPullRequest = Github(accessToken).pullRequests.get("47deg", "github4s", 102)
 
-getPullRequest.exec[cats.Id, HttpResponse[String]]() match {
+getPullRequest.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -73,7 +73,7 @@ import github4s.free.domain._
 val prFilters = List(PRFilterOpen, PRFilterSortPopularity)
 val listPullRequests = Github(accessToken).pullRequests.list("scala", "scala", prFilters)
 
-listPullRequests.exec[cats.Id, HttpResponse[String]]() match {
+listPullRequests.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -95,7 +95,7 @@ To list the files for a pull request:
 ```tut:silent
 val listPullRequestFiles = Github(accessToken).pullRequests.listFiles("47deg", "github4s", 102)
 
-listPullRequestFiles.exec[cats.Id, HttpResponse[String]]() match {
+listPullRequestFiles.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -128,7 +128,7 @@ val createPullRequestData = Github(accessToken).pullRequests.create(
   "base-branch",
   Some(true))
 
-createPullRequestData.exec[cats.Id, HttpResponse[String]]() match {
+createPullRequestData.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -148,7 +148,7 @@ val createPullRequestIssue = Github(accessToken).pullRequests.create(
   "base-branch",
   Some(true))
 
-createPullRequestIssue.exec[cats.Id, HttpResponse[String]]() match {
+createPullRequestIssue.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -173,7 +173,7 @@ val listReviews = Github(accessToken).pullRequests.listReviews(
   "github4s",
   139)
 
-listReviews.exec[cats.Id, HttpResponse[String]]() match {
+listReviews.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -200,7 +200,7 @@ val review = Github(accessToken).pullRequests.getReview(
   139,
   39355613)
 
-review.exec[cats.Id, HttpResponse[String]]() match {
+review.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

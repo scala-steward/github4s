@@ -213,7 +213,7 @@ we'll be writing our tests in [GHReposSpec][repos-integ-spec-scala]:
 "Repos >> ListStatuses" should "return a non empty list when a valid ref is provided" in {
   val response = Github(accessToken).repos
     .listStatuses(validRepoOwner, validRepoName, validCommitSha)
-    .execFuture[T](headerUserAgent)
+    .execFuture(headerUserAgent)
 
   testFutureIsRight[List[Status]](response, { r =>
     r.result.nonEmpty shouldBe true
@@ -224,7 +224,7 @@ we'll be writing our tests in [GHReposSpec][repos-integ-spec-scala]:
 it should "return an empty list when an invalid ref is provided" in {
   val response = Github(accessToken).repos
     .listStatuses(validRepoOwner, validRepoName, invalidRef)
-    .execFuture[T](headerUserAgent)
+    .execFuture(headerUserAgent)
 
   testFutureIsRight[List[Status]](response, { r =>
     r.result.isEmpty shouldBe true
@@ -274,8 +274,8 @@ We're just checking that our API defined above hits the right endpoint, here:
     response = response
   )
 
-  val repos = new Repos[String, Id] {
-    override val httpClient: HttpClient[String, Id] = httpClientMock
+  val repos = new Repos[Id] {
+    override val httpClient: HttpClient[Id] = httpClientMock
   }
   repos.listStatuses(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validRefSingle)
 }
@@ -375,7 +375,7 @@ To list the statuses for a specific ref:
 val listStatuses =
   Github(accessToken).repos.listStatuses("47deg", "github4s", "heads/master")
 
-listStatuses.exec[cats.Id, HttpResponse[String]]() match {
+listStatuses.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

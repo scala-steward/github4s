@@ -23,12 +23,12 @@ import github4s.free.interpreters.Capture
 import io.circe.generic.auto._
 
 /** Factory to encapsulate calls related to Organizations operations  */
-class Organizations[C, M[_]](
+class Organizations[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * List the users belonging to a specific organization

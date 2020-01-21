@@ -49,23 +49,23 @@ object Github {
 
   implicit class GithubIOSyntaxEither[A](gio: GHIO[GHResponse[A]]) {
 
-    def execK[M[_], C](
-        implicit I: Interpreters[M, C],
+    def execK[M[_]](
+        implicit I: Interpreters[M],
         A: MonadError[M, Throwable],
-        H: HttpRequestBuilderExtension[C, M]): Kleisli[M, Map[String, String], GHResponse[A]] =
+        H: HttpRequestBuilderExtension[M]): Kleisli[M, Map[String, String], GHResponse[A]] =
       gio foldMap I.interpreters
 
-    def exec[M[_], C](headers: Map[String, String] = Map())(
-        implicit I: Interpreters[M, C],
+    def exec[M[_]](headers: Map[String, String] = Map())(
+        implicit I: Interpreters[M],
         A: MonadError[M, Throwable],
-        H: HttpRequestBuilderExtension[C, M]): M[GHResponse[A]] =
+        H: HttpRequestBuilderExtension[M]): M[GHResponse[A]] =
       execK.run(headers)
 
-    def execFuture[C](headers: Map[String, String] = Map())(
-        implicit I: Interpreters[Future, C],
+    def execFuture(headers: Map[String, String] = Map())(
+        implicit I: Interpreters[Future],
         A: MonadError[Future, Throwable],
-        H: HttpRequestBuilderExtension[C, Future]): Future[GHResponse[A]] =
-      exec[Future, C](headers)
+        H: HttpRequestBuilderExtension[Future]): Future[GHResponse[A]] =
+      exec[Future](headers)
 
     def liftGH: EitherT[GHIO, GHException, GHResult[A]] =
       EitherT[GHIO, GHException, GHResult[A]](gio)

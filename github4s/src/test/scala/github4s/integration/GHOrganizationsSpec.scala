@@ -22,13 +22,13 @@ import github4s.free.domain.User
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
+trait GHOrganizationsSpec extends BaseIntegrationSpec {
 
   "Organization >> ListMembers" should "return the expected list of users" taggedAs Integration in {
     val response =
       Github(accessToken).organizations
         .listMembers(validRepoOwner)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -40,7 +40,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listMembers(invalidUsername)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -49,7 +49,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listOutsideCollaborators(validOrganizationName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -61,7 +61,7 @@ trait GHOrganizationsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).organizations
         .listOutsideCollaborators(invalidOrganizationName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

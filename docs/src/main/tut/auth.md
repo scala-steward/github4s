@@ -45,7 +45,7 @@ val newAuth = Github(None).auth.newAuth(
   "New access token",
   "e8e39175648c9db8c280",
   "1234567890")
-newAuth.exec[cats.Id, HttpResponse[String]]() match {
+newAuth.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -71,7 +71,7 @@ val authorizeUrl = Github(None).auth.authorizeUrl(
   "e8e39175648c9db8c280",
   "http://localhost:9000/_oauth-callback",
   List("public_repo"))
-authorizeUrl.exec[cats.Id, HttpResponse[String]]() match {
+authorizeUrl.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -101,7 +101,7 @@ val getAccessToken = Github(None).auth.getAccessToken(
   "code",
   "http://localhost:9000/_oauth-callback",
   "status")
-getAccessToken.exec[cats.Id, HttpResponse[String]]() match {
+getAccessToken.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

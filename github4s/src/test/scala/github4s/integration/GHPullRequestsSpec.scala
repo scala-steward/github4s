@@ -22,13 +22,13 @@ import github4s.free.domain._
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
+trait GHPullRequestsSpec extends BaseIntegrationSpec {
 
   "PullRequests >> Get" should "return a right response when a valid pr number is provided" taggedAs Integration in {
     val response =
       Github(accessToken).pullRequests
         .get(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[PullRequest](response, { r =>
       r.statusCode shouldBe okStatusCode
@@ -39,7 +39,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .get(validRepoOwner, validRepoName, validIssueNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -48,7 +48,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .get(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -57,7 +57,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .list(validRepoOwner, validRepoName, pagination = Some(Pagination(1, 10)))
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequest]](response, { r =>
       r.statusCode shouldBe okStatusCode
@@ -68,7 +68,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .list("lloydmeta", "gh-test-repo", List(PRFilterOpen))
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequest]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -83,7 +83,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
           validRepoOwner,
           validRepoName,
           List(PRFilterAll, PRFilterSortCreated, PRFilterOrderAsc))
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequest]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -95,7 +95,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .list(validRepoOwner, invalidRepoName)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -104,7 +104,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .listFiles(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequestFile]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -116,7 +116,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .listFiles("scala", "scala", 4877)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequestFile]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -128,7 +128,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .listFiles(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -137,7 +137,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .listReviews(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[PullRequestReview]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -149,7 +149,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).pullRequests
         .listReviews(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -162,7 +162,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
           validRepoName,
           validPullRequestNumber,
           validPullRequestReviewNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[PullRequestReview](response, { r =>
       r.result.id shouldBe validPullRequestReviewNumber
@@ -178,7 +178,7 @@ trait GHPullRequestsSpec[T] extends BaseIntegrationSpec[T] {
           invalidRepoName,
           validPullRequestNumber,
           validPullRequestReviewNumber)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

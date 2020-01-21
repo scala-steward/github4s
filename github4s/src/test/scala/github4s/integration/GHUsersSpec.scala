@@ -22,11 +22,11 @@ import github4s.free.domain.User
 import github4s.implicits._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
-trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
+trait GHUsersSpec extends BaseIntegrationSpec {
 
   "Users >> Get" should "return the expected login for a valid username" taggedAs Integration in {
     val response =
-      Github(accessToken).users.get(validUsername).execFuture[T](headerUserAgent)
+      Github(accessToken).users.get(validUsername).execFuture(headerUserAgent)
 
     testFutureIsRight[User](response, { r =>
       r.result.login shouldBe validUsername
@@ -37,14 +37,14 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
   it should "return error on Left for invalid username" taggedAs Integration in {
     val response = Github(accessToken).users
       .get(invalidUsername)
-      .execFuture[T](headerUserAgent)
+      .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
 
   "Users >> GetAuth" should "return error on Left when no accessToken is provided" taggedAs Integration in {
     val response =
-      Github().users.getAuth.execFuture[T](headerUserAgent)
+      Github().users.getAuth.execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }
@@ -53,7 +53,7 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).users
         .getUsers(validSinceInt)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -65,7 +65,7 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).users
         .getUsers(invalidSinceInt)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.isEmpty shouldBe true
@@ -77,7 +77,7 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).users
         .getFollowing(validUsername)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
@@ -89,7 +89,7 @@ trait GHUsersSpec[T] extends BaseIntegrationSpec[T] {
     val response =
       Github(accessToken).users
         .getFollowing(invalidUsername)
-        .execFuture[T](headerUserAgent)
+        .execFuture(headerUserAgent)
 
     testFutureIsLeft(response)
   }

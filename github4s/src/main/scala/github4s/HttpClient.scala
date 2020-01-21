@@ -61,7 +61,7 @@ object HttpClient {
   }
 }
 
-class HttpRequestBuilder[C, M[_]](
+class HttpRequestBuilder[M[_]](
     val url: String,
     val httpVerb: HttpVerb = Get,
     val authHeader: Map[String, String] = Map.empty[String, String],
@@ -70,46 +70,44 @@ class HttpRequestBuilder[C, M[_]](
     val headers: Map[String, String] = Map.empty[String, String]
 ) {
 
-  def postMethod = new HttpRequestBuilder[C, M](url, Post, authHeader, data, params, headers)
+  def postMethod = new HttpRequestBuilder[M](url, Post, authHeader, data, params, headers)
 
-  def patchMethod = new HttpRequestBuilder[C, M](url, Patch, authHeader, data, params, headers)
+  def patchMethod = new HttpRequestBuilder[M](url, Patch, authHeader, data, params, headers)
 
-  def putMethod = new HttpRequestBuilder[C, M](url, Put, authHeader, data, params, headers)
+  def putMethod = new HttpRequestBuilder[M](url, Put, authHeader, data, params, headers)
 
-  def deleteMethod = new HttpRequestBuilder[C, M](url, Delete, authHeader, data, params, headers)
+  def deleteMethod = new HttpRequestBuilder[M](url, Delete, authHeader, data, params, headers)
 
   def withAuth(accessToken: Option[String] = None) = {
     val authHeader = accessToken match {
       case Some(token) => Map("Authorization" -> s"token $token")
       case _           => Map.empty[String, String]
     }
-    new HttpRequestBuilder[C, M](url, httpVerb, authHeader, data, params, headers)
+    new HttpRequestBuilder[M](url, httpVerb, authHeader, data, params, headers)
   }
 
   def withHeaders(headers: Map[String, String]) =
-    new HttpRequestBuilder[C, M](url, httpVerb, authHeader, data, params, headers)
+    new HttpRequestBuilder[M](url, httpVerb, authHeader, data, params, headers)
 
   def withParams(params: Map[String, String]) =
-    new HttpRequestBuilder[C, M](url, httpVerb, authHeader, data, params, headers)
+    new HttpRequestBuilder[M](url, httpVerb, authHeader, data, params, headers)
 
   def withData(data: String) =
-    new HttpRequestBuilder[C, M](url, httpVerb, authHeader, Option(data), params, headers)
+    new HttpRequestBuilder[M](url, httpVerb, authHeader, Option(data), params, headers)
 }
 
 object HttpRequestBuilder {
-  def httpRequestBuilder[C, M[_]](
+  def httpRequestBuilder[M[_]](
       url: String,
       httpVerb: HttpVerb = Get,
       authHeader: Map[String, String] = Map.empty[String, String],
       data: Option[String] = None,
       params: Map[String, String] = Map.empty[String, String],
       headers: Map[String, String] = Map.empty[String, String]
-  ) = new HttpRequestBuilder[C, M](url, httpVerb, authHeader, data, params, headers)
+  ) = new HttpRequestBuilder[M](url, httpVerb, authHeader, data, params, headers)
 }
 
-class HttpClient[C, M[_]](
-    implicit urls: GithubApiUrls,
-    httpRbImpl: HttpRequestBuilderExtension[C, M]) {
+class HttpClient[M[_]](implicit urls: GithubApiUrls, httpRbImpl: HttpRequestBuilderExtension[M]) {
   import HttpRequestBuilder._
 
   val defaultPagination = Pagination(1, 1000)

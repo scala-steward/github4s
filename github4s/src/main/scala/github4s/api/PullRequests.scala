@@ -27,15 +27,15 @@ import io.circe.syntax._
 import scala.language.higherKinds
 
 /** Factory to encapsulate calls related to PullRequests operations  */
-class PullRequests[C, M[_]](
+class PullRequests[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._
   import Encoders._
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * Get a single pull request for a repository

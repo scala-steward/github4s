@@ -28,12 +28,12 @@ import github4s.free.interpreters.Capture
 import com.github.marklister.base64.Base64.Encoder
 
 /** Factory to encapsulate calls related to Auth operations  */
-class Auth[C, M[_]](
+class Auth[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   val authorizeUrl   = urls.authorizeUrl
   val accessTokenUrl = urls.accessTokenUrl

@@ -25,14 +25,14 @@ import io.circe.syntax._
 import io.circe.generic.auto._
 
 /** Factory to encapsulate calls related to Repositories operations  */
-class Repos[C, M[_]](
+class Repos[M[_]](
     implicit urls: GithubApiUrls,
     C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[C, M]) {
+    httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._
 
-  val httpClient = new HttpClient[C, M]
+  val httpClient = new HttpClient[M]
 
   /**
    * Get information of a particular repository

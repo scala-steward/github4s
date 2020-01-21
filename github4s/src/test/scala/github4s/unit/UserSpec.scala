@@ -35,8 +35,8 @@ class UserSpec extends BaseSpec {
       response = response
     )
 
-    val users = new Users[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val users = new Users[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     users.get(sampleToken, headerUserAgent, validUsername)
   }
@@ -51,8 +51,8 @@ class UserSpec extends BaseSpec {
       response = response
     )
 
-    val users = new Users[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val users = new Users[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     users.getAuth(sampleToken, headerUserAgent)
   }
@@ -70,8 +70,8 @@ class UserSpec extends BaseSpec {
       response = response
     )
 
-    val users = new Users[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val users = new Users[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     users.getUsers(sampleToken, headerUserAgent, 1)
   }
@@ -86,8 +86,8 @@ class UserSpec extends BaseSpec {
       response = response
     )
 
-    val users = new Users[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val users = new Users[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
     users.getFollowing(sampleToken, headerUserAgent, validUsername)
   }

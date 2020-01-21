@@ -48,8 +48,8 @@ class GistSpec extends BaseSpec {
       response = response
     )
 
-    val gists = new Gists[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gists = new Gists[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gists.newGist(
@@ -71,8 +71,8 @@ class GistSpec extends BaseSpec {
       response = response
     )
 
-    val gists = new Gists[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gists = new Gists[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gists.getGist(
@@ -93,8 +93,8 @@ class GistSpec extends BaseSpec {
       response = response
     )
 
-    val gists = new Gists[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gists = new Gists[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gists.getGist(
@@ -132,8 +132,8 @@ class GistSpec extends BaseSpec {
       response = response
     )
 
-    val gists = new Gists[String, Id] {
-      override val httpClient: HttpClient[String, Id] = httpClientMock
+    val gists = new Gists[Id] {
+      override val httpClient: HttpClient[Id] = httpClientMock
     }
 
     gists.editGist(
