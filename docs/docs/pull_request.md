@@ -20,7 +20,7 @@ with Github4s, you can interact with:
 
 The following examples assume the following imports and token:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
 import github4s.jvm.Implicits._
@@ -45,7 +45,7 @@ You can get a single pull request for a repository using `get`; it takes as argu
 
 To get a single pull request:
 
-```tut:silent
+```scala mdoc:silent
 val getPullRequest = Github(accessToken).pullRequests.get("47deg", "github4s", 102)
 
 getPullRequest.exec[cats.Id]() match {
@@ -68,7 +68,7 @@ You can list the pull requests for a repository using `list`; it takes as argume
 As an example, let's say we want the open pull requests in <https://github.com/scala/scala> sorted
 by popularity:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.free.domain._
 val prFilters = List(PRFilterOpen, PRFilterSortPopularity)
 val listPullRequests = Github(accessToken).pullRequests.list("scala", "scala", prFilters)
@@ -92,7 +92,7 @@ You can also list the files for a pull request using `listFiles`; it takes as ar
 
 To list the files for a pull request:
 
-```tut:silent
+```scala mdoc:silent
 val listPullRequestFiles = Github(accessToken).pullRequests.listFiles("47deg", "github4s", 102)
 
 listPullRequestFiles.exec[cats.Id]() match {
@@ -167,7 +167,7 @@ You can list the reviews for a pull request using `listReviews`; it takes as arg
 
 As an example, if we wanted to see all the reviews for pull request 139 of `47deg/github4s`:
 
-```tut:silent
+```scala mdoc:silent
 val listReviews = Github(accessToken).pullRequests.listReviews(
   "47deg",
   "github4s",
@@ -193,7 +193,7 @@ You can get an individual review for a pull request using `getReview`; it takes 
 
 As an example, if we wanted to see review 39355613 for pull request 139 of `47deg/github4s`:
 
-```tut:silent
+```scala mdoc:silent
 val review = Github(accessToken).pullRequests.getReview(
   "47deg",
   "github4s",

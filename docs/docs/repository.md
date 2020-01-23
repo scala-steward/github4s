@@ -28,7 +28,7 @@ with Github4s, you can interact with:
 
 The following examples assume the following imports and token:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
 import github4s.jvm.Implicits._
@@ -52,7 +52,7 @@ You can get a repository using `get`; it takes as arguments:
 
 To get a repository:
 
-```tut:silent
+```scala mdoc:silent
 val getRepo =
   Github(accessToken).repos.get("47deg", "github4s")
 
@@ -79,7 +79,7 @@ takes as arguments:
 
 To list the repositories for an organization:
 
-```tut:silent
+```scala mdoc:silent
 val listOrgRepos = Github(accessToken).repos.listOrgRepos("47deg")
 
 listOrgRepos.exec[cats.Id]() match {
@@ -104,7 +104,7 @@ takes as arguments:
 
 To list the repositories for a user:
 
-```tut:silent
+```scala mdoc:silent
 val listUserRepos = Github(accessToken).repos.listUserRepos("rafaparadela")
 
 listUserRepos.exec[cats.Id]() match {
@@ -130,7 +130,7 @@ You can list contributors using `listContributors`, it takes as arguments:
 
 To list contributors:
 
-```tut:silent
+```scala mdoc:silent
 val listContributors =
   Github(accessToken).repos.listContributors("47deg", "github4s", Some("true"))
 
@@ -155,7 +155,7 @@ You can list collaborators using `listCollaborators`, it takes as arguments:
 - `affiliation`, one of `outside`, `direct`, or `all` (default `all`).
 For more information take a look at [the API doc](https://developer.github.com/v3/repos/collaborators/#parameters).
 
-```tut:silent
+```scala mdoc:silent
 val listCollaborators =
   Github(accessToken).repos.listCollaborators("47deg", "github4s", Some("all"))
 
@@ -186,7 +186,7 @@ You can list commits using `listCommits`, it takes as arguments:
 
 To list commits:
 
-```tut:silent
+```scala mdoc:silent
 val listCommits =
   Github(accessToken).repos.listCommits(
   "47deg",
@@ -219,7 +219,7 @@ You can list branches using `listBranches`, it takes as arguments:
 
 To list branches:
 
-```tut:silent
+```scala mdoc:silent
 val listBranches =
   Github(accessToken).repos.listBranches(
   "47deg",
@@ -249,7 +249,7 @@ You can get contents using `getContents`, it takes as arguments:
 
 To get contents:
 
-```tut:silent
+```scala mdoc:silent
 val getContents =
   Github(accessToken).repos.getContents("47deg", "github4s", "README.md", Some("heads/master"))
 
@@ -333,7 +333,7 @@ You can also list statuses through `listStatuses`; it take as arguments:
 
 To list the statuses for a specific ref:
 
-```tut:silent
+```scala mdoc:silent
 val listStatuses =
   Github(accessToken).repos.listStatuses("47deg", "github4s", "heads/master")
 
@@ -353,7 +353,7 @@ for full reference.
 Lastly, you can also get the combined status thanks to `getCombinedStatus`; it takes the same
 arguments as the operation listing statuses:
 
-```tut:silent
+```scala mdoc:silent
 val combinedStatus =
   Github(accessToken).repos.getCombinedStatus("47deg", "github4s", "heads/master")
 

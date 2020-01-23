@@ -14,7 +14,7 @@ with Github4s, you can:
 
 The following examples assume the following imports and token:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
 import github4s.jvm.Implicits._

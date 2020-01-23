@@ -10,7 +10,7 @@ import sbtorgpolicies.templates.badges._
 import sbtorgpolicies.runnable.syntax._
 import scoverage.ScoverageKeys
 import scoverage.ScoverageKeys._
-import tut.TutPlugin.autoImport._
+import mdoc.MdocPlugin.autoImport._
 
 object ProjectPlugin extends AutoPlugin {
 
@@ -43,7 +43,7 @@ object ProjectPlugin extends AutoPlugin {
       micrositeGithubOwner := "47deg",
       micrositeGithubRepo := "github4s",
       micrositeAuthor := "Github4s contributors",
-      micrositeCompilingDocsTool := WithTut,
+      micrositeCompilingDocsTool := WithMdoc,
       micrositePushSiteWith := GitHub4s,
       micrositeOrganizationHomepage := "https://github.com/47deg/github4s/blob/master/AUTHORS.md",
       micrositePalette := Map(
@@ -57,9 +57,9 @@ object ProjectPlugin extends AutoPlugin {
           Map("title" -> "Changelog", "section" -> "home", "position" -> "3", "permalink" -> "changelog")
         )
       ),
-      micrositeExtraMdFilesOutput := (tutSourceDirectory).value,
+      //micrositeExtraMdFilesOutput := "docs",
       includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
-      scalacOptions in Tut ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
+      scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )
 
     lazy val coreDeps = Seq(
@@ -132,7 +132,7 @@ object ProjectPlugin extends AutoPlugin {
       ),
       orgScriptTaskListSetting ++= List(
         (ScoverageKeys.coverageAggregate in Test).asRunnableItemFull,
-        "docs/tut".asRunnableItem
+        "docs/mdoc".asRunnableItem
       ),
       coverageExcludedPackages := "<empty>;github4s\\.scalaz\\..*",
       // This is necessary to prevent packaging the BuildInfo with

@@ -17,7 +17,7 @@ with Github4s, you can interacts with:
 
 The following examples assume the following imports and token:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
 import github4s.jvm.Implicits._
@@ -36,7 +36,7 @@ You can get a user using `get`, it takes as argument:
 
 - `username`: of the user to retrieve.
 
-```tut:silent
+```scala mdoc:silent
 val getUser = Github(accessToken).users.get("rafaparadela")
 getUser.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
@@ -55,7 +55,7 @@ Get information of the authenticated user making the API call.
 
 You can get an authenticated user using `getAuth`:
 
-```tut:silent
+```scala mdoc:silent
 val getAuth = Github(accessToken).users.getAuth
 getAuth.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
@@ -75,7 +75,7 @@ You can get a list of users using `getUsers`, it takes as arguments:
 - `since`: The integer ID of the last User that you've seen.
 - `pagination`: Limit and Offset for pagination.
 
-```tut:silent
+```scala mdoc:silent
 val getUsers = Github(accessToken).users.getUsers(1)
 getUsers.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
@@ -99,7 +99,7 @@ You can get a list of users followed by another user using `getFollowing`, it ta
 
 - `username`: of the user to retrieve.
 
-```tut:silent
+```scala mdoc:silent
 val getUser = Github(accessToken).users.getFollowing("rafaparadela")
 getUser.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")

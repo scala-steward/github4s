@@ -16,18 +16,18 @@ appropriate scopes (i.e. if you want to create gists, your token will need to ha
 First things first, we'll need to import `github4s.Github` which is the entry point to the Github
 API in Github4s.
 
-```tut:silent
+```scala mdoc:silent
 import github4s.Github
 ```
 
 In order for Github4s to work in both JVM and scala-js environments, you'll need to place different
 implicits in your scope, depending on your needs:
 
-```tut:silent
+```scala mdoc:silent
 import github4s.jvm.Implicits._
 ```
 
-```tut:invisible
+```scala mdoc:invisible
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
 
@@ -45,7 +45,7 @@ case class GHResult[A](result: A, statusCode: Int, headers: Map[String, IndexedS
 
 As an introductory example, we can get a user with the following:
 
-```tut:silent
+```scala mdoc:silent
 val user1 = Github(accessToken).users.get("rafaparadela")
 ```
 
@@ -58,7 +58,7 @@ A few examples follow with different `MonadError[M, Throwable]`.
 
 ### Using `cats.Eval`
 
-```tut:silent
+```scala mdoc:silent
 import cats.Eval
 import github4s.Github._
 import scalaj.http.HttpResponse
@@ -70,7 +70,7 @@ object ProgramEval {
 
 As mentioned above, `u1` should have an `GHResult[User]` in the right.
 
-```tut:silent
+```scala mdoc:silent
 import cats.implicits._
 import github4s.GithubResponses.GHResult
 
@@ -82,7 +82,7 @@ ProgramEval.u1 match {
 
 ### Using `cats.Id`
 
-```tut:silent
+```scala mdoc:silent
 import cats.Id
 
 object ProgramId {
@@ -92,7 +92,7 @@ object ProgramId {
 
 ### Using `Future`
 
-```tut:silent
+```scala mdoc:silent
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -108,7 +108,7 @@ object ProgramFuture {
 ### Using `cats.effect.{Async, Sync}`
 
 On the JVM, you can use any `cats.effect.Sync`, here we're using `cats.effect.IO`:
-```tut:silent
+```scala mdoc:silent
 import cats.effect.IO
 import github4s.cats.effect.jvm.Implicits._
 
@@ -125,7 +125,7 @@ cats-effect integration.
 
 The different `exec` methods let users include custom headers for any Github API request:
 
-```tut:silent
+```scala mdoc:silent
 object ProgramEval {
   val userHeaders = Map("user-agent" -> "github4s")
   val user1 = Github(accessToken).users.get("rafaparadela").exec[Eval](userHeaders).value
