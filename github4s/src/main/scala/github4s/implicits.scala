@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package github4s.jvm
+package github4s
 
 import cats.instances.FutureInstances
-import cats.{Eval, _}
+import cats.{Eval, Id}
 import github4s.free.interpreters.Interpreters
-import github4s.{EvalInstances, HttpRequestBuilderExtensionJVM, IdInstances}
-import scala.concurrent.Future
-import scalaj.http.HttpResponse
-import scala.concurrent.ExecutionContext.Implicits.global
-import github4s.implicits._
 
-trait ImplicitsJVM
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import implicits1._
+
+trait InstancesAndInterpreters
     extends IdInstances
     with EvalInstances
     with FutureInstances
@@ -36,3 +36,5 @@ trait ImplicitsJVM
   implicit val intInstanceFutureScalaJ = new Interpreters[Future]
 
 }
+
+object implicits extends InstancesAndInterpreters with FutureCaptureInstance

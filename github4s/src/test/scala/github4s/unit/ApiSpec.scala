@@ -22,7 +22,7 @@ import github4s.utils.{DummyGithubUrls, MockGithubApiServer, TestUtilsJVM}
 import cats.implicits._
 import scalaj.http._
 import cats.Id
-import github4s.jvm.ImplicitsJVM
+import github4s.InstancesAndInterpreters
 import github4s.utils.Integration
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -33,7 +33,7 @@ class ApiSpec
     with TestUtilsJVM
     with MockGithubApiServer
     with DummyGithubUrls
-    with ImplicitsJVM {
+    with InstancesAndInterpreters {
 
   val auth          = new Auth[Id]
   val repos         = new Repos[Id]
