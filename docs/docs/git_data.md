@@ -54,7 +54,7 @@ You can get a reference using `getReference`, it takes as arguments:
 val getReference = Github(accessToken).gitData.getReference("47deg", "github4s", "heads/master")
 
 getReference.exec[cats.Id]() match {
-  case Left(e) => println(s"Something went wrong: s{e.getMessage}")
+  case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
 ```

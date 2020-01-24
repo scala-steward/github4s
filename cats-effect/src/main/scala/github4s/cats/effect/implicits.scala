@@ -19,8 +19,6 @@ package github4s.cats.effect
 import cats.effect.Sync
 import github4s.HttpRequestBuilderExtensionJVM
 import github4s.free.interpreters.Interpreters
-import github4s.implicits1._
-import scalaj.http.HttpResponse
 
 trait InstancesAndInterpreters extends HttpRequestBuilderExtensionJVM with SyncCaptureInstance {
   implicit def intInstanceSyncScalaJ[F[_]: Sync] = new Interpreters[F]

@@ -69,7 +69,7 @@ As mentioned above, `u1` should have an `GHResult[User]` in the right.
 ```scala mdoc:silent
 import github4s.GithubResponses.GHResult
 ProgramEval.u1 match {
-  case Right(GHResult(result, status, headers)) => result.login
+  case Right(GHResult(result, status@_, headers@_)) => result.login
   case Left(e) => e.getMessage
 }
 ```

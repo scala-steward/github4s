@@ -20,7 +20,6 @@ import github4s.api._
 import github4s.free.domain.{EditGistFile, GistFile, Pagination}
 import github4s.utils.{DummyGithubUrls, MockGithubApiServer, TestUtilsJVM}
 import cats.implicits._
-import scalaj.http._
 import cats.Id
 import github4s.InstancesAndInterpreters
 import github4s.utils.Integration

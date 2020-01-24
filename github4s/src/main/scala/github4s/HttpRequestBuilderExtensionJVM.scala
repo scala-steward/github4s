@@ -18,7 +18,6 @@ package github4s
 
 import github4s.GithubResponses._
 import io.circe._
-import io.circe.syntax._
 import io.circe.jackson._
 import scalaj.http._
 import cats.implicits._

@@ -22,7 +22,6 @@ import github4s.Github._
 import github4s.cats.effect.implicits._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
-import scalaj.http.HttpResponse
 
 class CatsEffectSpec extends AnyFlatSpec with Matchers {
   val accessToken     = sys.env.get("GITHUB4S_ACCESS_TOKEN")

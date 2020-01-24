@@ -17,7 +17,7 @@
 package github4s.free.interpreters
 
 import cats.data.Kleisli
-import cats.{~>, ApplicativeError, MonadError}
+import cats.~>
 import github4s.GithubDefaultUrls._
 import github4s.HttpRequestBuilderExtension
 import github4s.api._
@@ -32,16 +32,11 @@ trait Capture[M[_]] {
   def capture[A](a: => A): M[A]
 }
 
-class Interpreters[M[_]](
-    implicit A: ApplicativeError[M, Throwable],
-    C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[M]) {
+class Interpreters[M[_]](implicit C: Capture[M], httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   type K[A] = Kleisli[M, Map[String, String], A]
 
-  implicit def interpreters(
-      implicit A: MonadError[M, Throwable]
-  ): GitHub4s ~> K = {
+  implicit val interpreters: GitHub4s ~> K = {
     val c01interpreter: COGH01 ~> K = repositoryOpsInterpreter or userOpsInterpreter
     val c02interpreter: COGH02 ~> K = gistOpsInterpreter or c01interpreter
     val c03interpreter: COGH03 ~> K = issueOpsInterpreter or c02interpreter

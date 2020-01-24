@@ -59,7 +59,7 @@ object ProjectPlugin extends AutoPlugin {
       ),
       micrositeExtraMdFilesOutput := mdocIn.value,
       includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
-      scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
+      scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint", "-Xfatal-warnings").contains)
     )
 
     lazy val coreDeps = Seq(

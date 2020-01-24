@@ -19,16 +19,12 @@ package github4s.api
 import cats.data.NonEmptyList
 import github4s.GithubResponses.GHResponse
 import github4s.free.domain._
-import github4s.free.interpreters.Capture
 import github4s._
 import io.circe.syntax._
 import io.circe.generic.auto._
 
 /** Factory to encapsulate calls related to Repositories operations  */
-class Repos[M[_]](
-    implicit urls: GithubApiUrls,
-    C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[M]) {
+class Repos[M[_]](implicit urls: GithubApiUrls, httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._
 
