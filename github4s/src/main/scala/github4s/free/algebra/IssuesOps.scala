@@ -18,7 +18,6 @@ package github4s.free.algebra
 
 import cats.InjectK
 import cats.free.Free
-import github4s.GHRepos
 import github4s.GithubResponses._
 import github4s.free.domain._
 

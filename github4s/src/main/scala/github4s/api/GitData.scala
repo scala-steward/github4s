@@ -20,19 +20,13 @@ import cats.data.NonEmptyList
 import github4s.GithubResponses.GHResponse
 import github4s.{Decoders, Encoders, GithubApiUrls, HttpClient, HttpRequestBuilderExtension}
 import github4s.free.domain._
-import github4s.free.interpreters.Capture
 import io.circe.syntax._
 import io.circe.generic.auto._
-
-import scala.language.higherKinds
 
 /**
  * Factory that encapsulates all the Git Database API calls
  */
-class GitData[M[_]](
-    implicit urls: GithubApiUrls,
-    C: Capture[M],
-    httpClientImpl: HttpRequestBuilderExtension[M]) {
+class GitData[M[_]](implicit urls: GithubApiUrls, httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._
   import Encoders._

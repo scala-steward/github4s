@@ -19,8 +19,6 @@ package github4s
 import github4s.GithubResponses.GHResponse
 import io.circe.Decoder
 
-import scala.language.higherKinds
-
 trait HttpRequestBuilderExtension[M[_]] {
   def run[A](rb: HttpRequestBuilder[M])(implicit D: Decoder[A]): M[GHResponse[A]]
 

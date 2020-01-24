@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package github4s.cats.effect.jvm
+package github4s
 
-import cats.effect.Sync
-import github4s.HttpRequestBuilderExtensionJVM
-import github4s.cats.effect.SyncCaptureInstance
+import cats.instances.FutureInstances
+import cats.{Eval, Id}
 import github4s.free.interpreters.Interpreters
-import github4s.implicits._
-import scalaj.http.HttpResponse
 
-trait ImplicitsJVM extends HttpRequestBuilderExtensionJVM with SyncCaptureInstance {
-  implicit def intInstanceSyncScalaJ[F[_]: Sync] = new Interpreters[F]
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import implicits1._
+
+trait InstancesAndInterpreters
+    extends IdInstances
+    with EvalInstances
+    with FutureInstances
+    with HttpRequestBuilderExtensionJVM {
+
+  implicit val intInstanceIdScalaJ     = new Interpreters[Id]
+  implicit val intInstanceEvalScalaJ   = new Interpreters[Eval]
+  implicit val intInstanceFutureScalaJ = new Interpreters[Future]
+
 }
+
+object implicits extends InstancesAndInterpreters with FutureCaptureInstance

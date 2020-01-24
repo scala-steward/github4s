@@ -18,18 +18,13 @@ package github4s.api
 
 import github4s.GithubResponses.GHResponse
 import github4s.free.domain._
-import github4s.free.interpreters.Capture
 import github4s.{Decoders, Encoders, GithubApiUrls, HttpClient, HttpRequestBuilderExtension}
-import github4s.util.URLEncoder
 import io.circe.generic.auto._
 import io.circe.syntax._
-
-import scala.language.higherKinds
 
 /** Factory to encapsulate calls related to PullRequests operations  */
 class PullRequests[M[_]](
     implicit urls: GithubApiUrls,
-    C: Capture[M],
     httpClientImpl: HttpRequestBuilderExtension[M]) {
 
   import Decoders._

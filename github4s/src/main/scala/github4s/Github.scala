@@ -23,7 +23,6 @@ import github4s.GithubResponses._
 import github4s.free.interpreters.Interpreters
 
 import scala.concurrent.Future
-import scala.language.higherKinds
 
 /**
  * Represent the Github API wrapper
@@ -33,7 +32,7 @@ class Github(accessToken: Option[String] = None) {
 
   lazy val users         = new GHUsers(accessToken)
   lazy val repos         = new GHRepos(accessToken)
-  lazy val auth          = new GHAuth(accessToken)
+  lazy val auth          = new GHAuth
   lazy val gists         = new GHGists(accessToken)
   lazy val issues        = new GHIssues(accessToken)
   lazy val activities    = new GHActivities(accessToken)
@@ -51,20 +50,17 @@ object Github {
 
     def execK[M[_]](
         implicit I: Interpreters[M],
-        A: MonadError[M, Throwable],
-        H: HttpRequestBuilderExtension[M]): Kleisli[M, Map[String, String], GHResponse[A]] =
+        A: MonadError[M, Throwable]): Kleisli[M, Map[String, String], GHResponse[A]] =
       gio foldMap I.interpreters
 
     def exec[M[_]](headers: Map[String, String] = Map())(
         implicit I: Interpreters[M],
-        A: MonadError[M, Throwable],
-        H: HttpRequestBuilderExtension[M]): M[GHResponse[A]] =
+        A: MonadError[M, Throwable]): M[GHResponse[A]] =
       execK.run(headers)
 
     def execFuture(headers: Map[String, String] = Map())(
         implicit I: Interpreters[Future],
-        A: MonadError[Future, Throwable],
-        H: HttpRequestBuilderExtension[Future]): Future[GHResponse[A]] =
+        A: MonadError[Future, Throwable]): Future[GHResponse[A]] =
       exec[Future](headers)
 
     def liftGH: EitherT[GHIO, GHException, GHResult[A]] =

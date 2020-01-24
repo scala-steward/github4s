@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-package github4s.cats.effect.jvm
+package github4s.cats.effect
 
-object Implicits extends ImplicitsJVM
+import cats.effect.Sync
+import github4s.HttpRequestBuilderExtensionJVM
+import github4s.free.interpreters.Interpreters
+
+trait InstancesAndInterpreters extends HttpRequestBuilderExtensionJVM with SyncCaptureInstance {
+  implicit def intInstanceSyncScalaJ[F[_]: Sync] = new Interpreters[F]
+}
+
+object implicits extends InstancesAndInterpreters
