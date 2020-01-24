@@ -57,7 +57,7 @@ object ProjectPlugin extends AutoPlugin {
           Map("title" -> "Changelog", "section" -> "home", "position" -> "3", "permalink" -> "changelog")
         )
       ),
-      //micrositeExtraMdFilesOutput := "docs",
+      micrositeExtraMdFilesOutput := mdocIn.value,
       includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.md" | "*.svg",
       scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
     )

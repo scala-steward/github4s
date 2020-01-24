@@ -23,7 +23,7 @@ import github4s.Github._
 
 In order for Github4s to work, you'll need the appropriate implicits in your scope:
 
-```scala mdoc:silent
+```scala
 import github4s.implicits._
 ```
 
@@ -58,19 +58,16 @@ A few examples follow with different `MonadError[M, Throwable]`.
 ### Using `cats.Eval`
 
 ```scala mdoc:silent
-import cats.Eval
-
 object ProgramEval {
-  val u1 = user1.exec[Eval]().value
+  import github4s.implicits._
+  val u1 = user1.exec[cats.Eval]().value
 }
 ```
 
 As mentioned above, `u1` should have an `GHResult[User]` in the right.
 
 ```scala mdoc:silent
-import cats.implicits._
 import github4s.GithubResponses.GHResult
-
 ProgramEval.u1 match {
   case Right(GHResult(result, status, headers)) => result.login
   case Left(e) => e.getMessage
@@ -80,22 +77,21 @@ ProgramEval.u1 match {
 ### Using `cats.Id`
 
 ```scala mdoc:silent
-import cats.Id
-
 object ProgramId {
-  val u2 = Github(accessToken).users.get("raulraja").exec[Id]()
+  import github4s.implicits._
+  val u2 = Github(accessToken).users.get("raulraja").exec[cats.Id]()
 }
 ```
 
 ### Using `Future`
 
 ```scala mdoc:silent
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
-import scala.concurrent.Await
-
 object ProgramFuture {
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.duration._
+  import scala.concurrent.Await
+  import github4s.implicits._
+
   // execFuture is a shortcut for exec[Future]
   val u3 = Github(accessToken).users.get("dialelo").execFuture()
   Await.result(u3, 2.seconds)
@@ -107,10 +103,10 @@ object ProgramFuture {
 We can use any `cats.effect.Sync`, here we're using `cats.effect.IO`:
 
 ```scala mdoc:silent
-import cats.effect.IO
-import github4s.cats.effect.implicits._
-
 object ProgramSync {
+  import cats.effect.IO
+  import github4s.cats.effect.implicits._
+
   val u5 = Github(accessToken).users.get("juanpedromoreno").exec[IO]()
   u5.unsafeRunSync
 }
@@ -124,10 +120,10 @@ cats-effect integration.
 The different `exec` methods let users include custom headers for any Github API request:
 
 ```scala mdoc:silent
-import cats.Eval
 object ProgramEvalWithHeaders {
+  import github4s.implicits._
   val userHeaders = Map("user-agent" -> "github4s")
-  val user1 = Github(accessToken).users.get("rafaparadela").exec[Eval](userHeaders).value
+  val user1 = Github(accessToken).users.get("rafaparadela").exec[cats.Eval](userHeaders).value
 }
 ```
 
