@@ -23,8 +23,6 @@ import github4s.free.domain._
 import io.circe.syntax._
 import io.circe.generic.auto._
 
-import scala.language.higherKinds
-
 /**
  * Factory that encapsulates all the Git Database API calls
  */

@@ -115,10 +115,10 @@ object ProjectPlugin extends AutoPlugin {
       crossScalaVersions := Seq(V.scala212, V.scala213),
       scalacOptions := {
         val withStripedLinter = scalacOptions.value filterNot Set("-Xlint", "-Xfuture").contains
-        CrossVersion.partialVersion(scalaBinaryVersion.value) match {
+        (CrossVersion.partialVersion(scalaBinaryVersion.value) match {
           case Some((2, 13)) => withStripedLinter :+ "-Ymacro-annotations"
           case _             => withStripedLinter
-        }
+        }) :+ "-language:higherKinds"
       },
       orgGithubTokenSetting := "GITHUB4S_ACCESS_TOKEN",
       orgBadgeListSetting := List(

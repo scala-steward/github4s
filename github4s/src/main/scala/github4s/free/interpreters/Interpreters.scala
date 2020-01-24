@@ -25,8 +25,6 @@ import github4s.app._
 import github4s.free.algebra._
 import simulacrum.typeclass
 
-import scala.language.higherKinds
-
 @typeclass
 trait Capture[M[_]] {
   def capture[A](a: => A): M[A]

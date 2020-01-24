@@ -22,8 +22,6 @@ import github4s.{Decoders, Encoders, GithubApiUrls, HttpClient, HttpRequestBuild
 import io.circe.generic.auto._
 import io.circe.syntax._
 
-import scala.language.higherKinds
-
 /** Factory to encapsulate calls related to PullRequests operations  */
 class PullRequests[M[_]](
     implicit urls: GithubApiUrls,
