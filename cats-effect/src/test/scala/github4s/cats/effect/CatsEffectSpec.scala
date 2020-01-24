@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package github4s.cats.effect.jvm
+package github4s.cats.effect
 
 import cats.effect.IO
 import github4s.Github
 import github4s.Github._
-import github4s.cats.effect.jvm.Implicits._
+import github4s.cats.effect.implicits._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
 import scalaj.http.HttpResponse
 
-class CatsEffectJVMSpec extends AnyFlatSpec with Matchers {
+class CatsEffectSpec extends AnyFlatSpec with Matchers {
   val accessToken     = sys.env.get("GITHUB4S_ACCESS_TOKEN")
   val headerUserAgent = Map("user-agent" -> "github4s")
   val validUsername   = "rafaparadela"
