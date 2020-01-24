@@ -18,13 +18,13 @@ API in Github4s.
 
 ```scala mdoc:silent
 import github4s.Github
+import github4s.Github._
 ```
 
-In order for Github4s to work in both JVM and scala-js environments, you'll need to place different
-implicits in your scope, depending on your needs:
+In order for Github4s to work, you'll need the appropriate implicits in your scope:
 
 ```scala mdoc:silent
-import github4s.jvm.Implicits._
+import github4s.implicits._
 ```
 
 ```scala mdoc:invisible
@@ -50,9 +50,8 @@ val user1 = Github(accessToken).users.get("rafaparadela")
 ```
 
 `user1` in this case is a `GHIO[GHResponse[User]]` which we can run (`foldMap`) with
-`exec[M[_], C]` where `M[_]` that represents any type container that implements
-`MonadError[M, Throwable]` (for instance `cats.Eval`) and `C` represents a valid implementation of
-an [HttpClient][http-client].
+`exec[M[_]]` where `M[_]` that represents any type container that implements
+`MonadError[M, Throwable]` (for instance `cats.Eval`).
 
 A few examples follow with different `MonadError[M, Throwable]`.
 
@@ -60,8 +59,6 @@ A few examples follow with different `MonadError[M, Throwable]`.
 
 ```scala mdoc:silent
 import cats.Eval
-import github4s.Github._
-import scalaj.http.HttpResponse
 
 object ProgramEval {
   val u1 = user1.exec[Eval]().value
@@ -99,26 +96,27 @@ import scala.concurrent.duration._
 import scala.concurrent.Await
 
 object ProgramFuture {
-  // execFuture[C] is a shortcut for exec[Future, C]
+  // execFuture is a shortcut for exec[Future]
   val u3 = Github(accessToken).users.get("dialelo").execFuture()
   Await.result(u3, 2.seconds)
 }
 ```
 
-### Using `cats.effect.{Async, Sync}`
+### Using `cats.effect.Sync`
 
-On the JVM, you can use any `cats.effect.Sync`, here we're using `cats.effect.IO`:
+We can use any `cats.effect.Sync`, here we're using `cats.effect.IO`:
+
 ```scala mdoc:silent
 import cats.effect.IO
-import github4s.cats.effect.jvm.Implicits._
+import github4s.cats.effect.implicits._
 
-object ProgramTask {
+object ProgramSync {
   val u5 = Github(accessToken).users.get("juanpedromoreno").exec[IO]()
   u5.unsafeRunSync
 }
 ```
 
-Note that you'll need a dependency to the `github4s-cats-effect` package to leverage
+Note that you'll need a dependency to the `github4s-cats-effect` package to leverage the
 cats-effect integration.
 
 ## Specifying custom headers
@@ -126,7 +124,8 @@ cats-effect integration.
 The different `exec` methods let users include custom headers for any Github API request:
 
 ```scala mdoc:silent
-object ProgramEval {
+import cats.Eval
+object ProgramEvalWithHeaders {
   val userHeaders = Map("user-agent" -> "github4s")
   val user1 = Github(accessToken).users.get("rafaparadela").exec[Eval](userHeaders).value
 }

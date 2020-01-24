@@ -27,8 +27,7 @@ The following examples assume the following imports and token:
 ```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
-import github4s.jvm.Implicits._
-import scalaj.http.HttpResponse
+import github4s.implicits._
 
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
@@ -217,9 +216,9 @@ You can get a tree using `getTree`; it takes as arguments:
 - `recursive`: flag whether to get the tree recursively.
 
 ```scala mdoc:silent
-val getCommit = Github(accessToken).gitData.getTree("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891",true)
+val getTree = Github(accessToken).gitData.getTree("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891",true)
 
-getCommit.exec[cats.Id]() match {
+getTree.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

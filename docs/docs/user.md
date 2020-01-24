@@ -13,15 +13,14 @@ with Github4s, you can interacts with:
   - [Get a user](#get-a-user)
   - [Get an authenticated user](#get-an-authenticated-user)
   - [Get a list of users](#get-a-list-of-users)
-  - [List users followed by another user](#get-following)
+  - [List users followed by another user](#list-users-followed-by-another-user)
 
 The following examples assume the following imports and token:
 
 ```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
-import github4s.jvm.Implicits._
-import scalaj.http.HttpResponse
+import github4s.implicits._
 
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
@@ -100,8 +99,8 @@ You can get a list of users followed by another user using `getFollowing`, it ta
 - `username`: of the user to retrieve.
 
 ```scala mdoc:silent
-val getUser = Github(accessToken).users.getFollowing("rafaparadela")
-getUser.exec[cats.Id]() match {
+val getFollowing = Github(accessToken).users.getFollowing("rafaparadela")
+getFollowing.exec[cats.Id]() match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }

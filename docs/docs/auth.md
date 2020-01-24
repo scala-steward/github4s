@@ -18,8 +18,7 @@ The following examples assume the following imports:
 ```scala mdoc:silent
 import github4s.Github
 import github4s.Github._
-import github4s.jvm.Implicits._
-import scalaj.http.HttpResponse
+import github4s.implicits._
 ```
 
 **NOTE**: In the examples you will see `Github(None)`
