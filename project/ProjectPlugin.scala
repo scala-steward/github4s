@@ -23,7 +23,7 @@ object ProjectPlugin extends AutoPlugin {
     lazy val V = new {
       val base64: String       = "0.2.9"
       val cats: String         = "2.1.0"
-      val catsEffect: String   = "2.0.0"
+      val catsEffect: String   = "2.1.1"
       val circe: String        = "0.13.0"
       val circeJackson: String = "0.12.1"
       val paradise: String     = "2.1.1"
