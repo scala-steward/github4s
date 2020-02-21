@@ -16,42 +16,42 @@
 
 package github4s.integration
 
+import cats.effect.IO
 import github4s.Github
-import github4s.Github._
-import github4s.free.domain.{Issue, Label, SearchIssuesResult, User}
-import github4s.implicits1._
+import github4s.domain._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
 trait GHIssuesSpec extends BaseIntegrationSpec {
 
   "Issues >> List" should "return a list of issues" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .listIssues(validRepoOwner, validRepoName)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .listIssues(validRepoOwner, validRepoName, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[List[Issue]](response, { r =>
+    testIsRight[List[Issue]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
+
   }
 
-  "Issues >> Get" should "return an issue which is a PR" ignore {
-    val response = Github(accessToken).issues
-      .getIssue(validRepoOwner, validRepoName, validPullRequestNumber)
-      .execFuture(headerUserAgent)
+  "Issues >> Get" should "return an issue which is a PR" taggedAs Integration in {
+    val response = Github[IO](accessToken).issues
+      .getIssue(validRepoOwner, validRepoName, validPullRequestNumber, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[Issue](response, { r =>
-      r.result.body.isEmpty shouldBe true
+    testIsRight[Issue](response, { r =>
+      r.result.pull_request.isDefined shouldBe true
       r.statusCode shouldBe okStatusCode
     })
   }
 
   "Issues >> Search" should "return at least one issue for a valid query" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .searchIssues(validSearchQuery, validSearchParams)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .searchIssues(validSearchQuery, validSearchParams, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[SearchIssuesResult](response, { r =>
+    testIsRight[SearchIssuesResult](response, { r =>
       r.result.total_count > 0 shouldBe true
       r.result.items.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
@@ -59,11 +59,11 @@ trait GHIssuesSpec extends BaseIntegrationSpec {
   }
 
   it should "return an empty result for a non existent query string" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .searchIssues(nonExistentSearchQuery, validSearchParams)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .searchIssues(nonExistentSearchQuery, validSearchParams, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[SearchIssuesResult](response, { r =>
+    testIsRight[SearchIssuesResult](response, { r =>
       r.result.total_count shouldBe 0
       r.result.items.nonEmpty shouldBe false
       r.statusCode shouldBe okStatusCode
@@ -71,7 +71,7 @@ trait GHIssuesSpec extends BaseIntegrationSpec {
   }
 
   "Issues >> Edit" should "edit the specified issue" taggedAs Integration in {
-    val response = Github(accessToken).issues
+    val response = Github[IO](accessToken).issues
       .editIssue(
         validRepoOwner,
         validRepoName,
@@ -81,10 +81,11 @@ trait GHIssuesSpec extends BaseIntegrationSpec {
         validIssueBody,
         None,
         validIssueLabel,
-        validAssignees)
-      .execFuture(headerUserAgent)
+        validAssignees,
+        headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[Issue](response, { r =>
+    testIsRight[Issue](response, { r =>
       r.result.state shouldBe validIssueState
       r.result.title shouldBe validIssueTitle
       r.statusCode shouldBe okStatusCode
@@ -92,63 +93,68 @@ trait GHIssuesSpec extends BaseIntegrationSpec {
   }
 
   "Issues >> ListLabels" should "return a list of labels" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .listLabels(validRepoOwner, validRepoName, validIssueNumber)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .listLabels(validRepoOwner, validRepoName, validIssueNumber, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[List[Label]](response, { r =>
+    testIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
   }
 
   "Issues >> RemoveLabel" should "return a list of removed labels" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .removeLabel(validRepoOwner, validRepoName, validIssueNumber, validIssueLabel.head)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .removeLabel(
+        validRepoOwner,
+        validRepoName,
+        validIssueNumber,
+        validIssueLabel.head,
+        headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[List[Label]](response, { r =>
+    testIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
   }
 
   "Issues >> AddLabels" should "return a list of labels" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .addLabels(validRepoOwner, validRepoName, validIssueNumber, validIssueLabel)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .addLabels(validRepoOwner, validRepoName, validIssueNumber, validIssueLabel, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[List[Label]](response, { r =>
+    testIsRight[List[Label]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
   }
 
   "GHIssues >> ListAvailableAssignees" should "return a list of users" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .listAvailableAssignees(validRepoOwner, validRepoName)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .listAvailableAssignees(validRepoOwner, validRepoName, None, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[List[User]](response, { r =>
+    testIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
   }
 
   it should "return error for an invalid repo owner" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .listAvailableAssignees(invalidRepoOwner, validRepoName)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .listAvailableAssignees(invalidRepoOwner, validRepoName, None, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
   }
 
   it should "return error for an invalid repo name" taggedAs Integration in {
-    val response = Github(accessToken).issues
-      .listAvailableAssignees(validRepoOwner, invalidRepoName)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).issues
+      .listAvailableAssignees(validRepoOwner, invalidRepoName, None, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
   }
 
 }

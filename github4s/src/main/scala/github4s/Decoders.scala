@@ -21,10 +21,11 @@ import cats.instances.either._
 import cats.instances.list._
 import cats.syntax.list._
 import cats.syntax.traverse._
-import github4s.free.domain._
+import github4s.domain._
 import io.circe.Decoder.Result
 import io.circe._
 import io.circe.generic.auto._
+import io.circe.generic.semiauto.deriveDecoder
 
 /** Implicit circe decoders of domains objects */
 object Decoders {
@@ -222,15 +223,6 @@ object Decoders {
       )
   }
 
-  implicit val decodeStargazer: Decoder[Stargazer] =
-    Decoder[User]
-      .map(Stargazer(None, _))
-      .or(Decoder.instance(c =>
-        for {
-          starred_at <- c.downField("starred_at").as[String]
-          user       <- c.downField("user").as[User]
-        } yield Stargazer(Some(starred_at), user)))
-
   implicit val decodeStarredRepository: Decoder[StarredRepository] =
     Decoder[Repository]
       .map(StarredRepository(None, _))
@@ -255,4 +247,35 @@ object Decoders {
     }
   }
 
+  implicit val decoderPullRequestFile: Decoder[PullRequestFile] = deriveDecoder[PullRequestFile]
+  implicit val decoderPullRequestReview: Decoder[PullRequestReview] =
+    deriveDecoder[PullRequestReview]
+  implicit val decoderPullRequest: Decoder[PullRequest] = deriveDecoder[PullRequest]
+  implicit val decoderRef: Decoder[Ref]                 = deriveDecoder[Ref]
+  implicit val decoderRefCommit: Decoder[RefCommit]     = deriveDecoder[RefCommit]
+  implicit val decoderRefInfo: Decoder[RefInfo]         = deriveDecoder[RefInfo]
+  implicit val decoderTreeResult: Decoder[TreeResult]   = deriveDecoder[TreeResult]
+  implicit val decoderTag: Decoder[Tag]                 = deriveDecoder[Tag]
+  implicit val decoderIssue: Decoder[Issue]             = deriveDecoder[Issue]
+  implicit val decoderSearchIssuesResult: Decoder[SearchIssuesResult] =
+    deriveDecoder[SearchIssuesResult]
+  implicit val decoderComment: Decoder[Comment]               = deriveDecoder[Comment]
+  implicit val decoderUser: Decoder[User]                     = deriveDecoder[User]
+  implicit val decoderStatus: Decoder[Status]                 = deriveDecoder[Status]
+  implicit val decoderCombinedStatus: Decoder[CombinedStatus] = deriveDecoder[CombinedStatus]
+  implicit val decoderLabel: Decoder[Label]                   = deriveDecoder[Label]
+  implicit val decoderContent: Decoder[Content]               = deriveDecoder[Content]
+  implicit val decoderSubscription: Decoder[Subscription]     = deriveDecoder[Subscription]
+  implicit val decoderAuthorization: Decoder[Authorization]   = deriveDecoder[Authorization]
+  implicit val decoderOAuthToken: Decoder[OAuthToken]         = deriveDecoder[OAuthToken]
+  implicit val decoderRelease: Decoder[Release]               = deriveDecoder[Release]
+
+  implicit val decodeStargazer: Decoder[Stargazer] =
+    decoderUser
+      .map(Stargazer(None, _))
+      .or(Decoder.instance(c =>
+        for {
+          starred_at <- c.downField("starred_at").as[String]
+          user       <- c.downField("user").as[User]
+        } yield Stargazer(Some(starred_at), user)))
 }

@@ -26,11 +26,17 @@ The following examples assume the following imports and token:
 
 ```scala mdoc:silent
 import github4s.Github
-import github4s.Github._
-import github4s.implicits._
+import github4s.GithubIOSyntax._
+import cats.effect.IO
+import scala.concurrent.ExecutionContext.Implicits.global
 
+implicit val IOContextShift = IO.contextShift(global)
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
+
+They also make use of `cats.Id`, but any type container `F` implementing `ConcurrentEffect` will do.
+
+LiftIO syntax for `cats.Id` and `Future` are provided in `GithubIOSyntax`.
 
 ## Git Data
 
@@ -50,10 +56,10 @@ You can get a reference using `getReference`, it takes as arguments:
 - the repository coordinates (`owner` and `name` of the repository).
 - `ref`: ref formatted as `heads/branch`.
 
-```scala mdoc:silent
-val getReference = Github(accessToken).gitData.getReference("47deg", "github4s", "heads/master")
+```scala mdoc:compile-only
+val getReference = Github[IO](accessToken).gitData.getReference("47deg", "github4s", "heads/master")
 
-getReference.exec[cats.Id]() match {
+getReference.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -76,14 +82,14 @@ You can create a reference using `createReference`; it takes as arguments:
 If it doesn't start with 'refs' and has at least two slashes, it will be rejected.
 - `sha`: the SHA1 value to set this reference.
 
-```scala
-val createReference = Github(accessToken).gitData.createReference(
+```scala mdoc:compile-only
+val createReference = Github[IO](accessToken).gitData.createReference(
   "47deg",
   "github4s",
   "refs/heads/master",
   "d3b048c1f500ee5450e5d7b3d1921ed3e7645891")
 
-createReference.exec[cats.Id]() match {
+createReference.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -104,14 +110,15 @@ You can update a reference using `updateReference`; it takes as arguments:
 - `force`: Indicates whether to force the update or to make sure the update is a fast-forward update.
 Setting it to `false` will make sure you're not overwriting work. Default: `false`.
 
-```scala
-val updateReference = Github(accessToken).gitData.updateReference(
+```scala mdoc:compile-only
+val updateReference = Github[IO](accessToken).gitData.updateReference(
   "47deg",
   "github4s",
   "heads/master",
-  "d3b048c1f500ee5450e5d7b3d1921ed3e7645891")
+  "d3b048c1f500ee5450e5d7b3d1921ed3e7645891",
+  false)
 
-updateReference.exec[cats.Id]() match {
+updateReference.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -130,10 +137,10 @@ You can get a commit using `getCommit`; it takes as arguments:
 - the repository coordinates (`owner` and `name` of the repository).
 - `sha`: the sha of the commit.
 
-```scala mdoc:silent
-val getCommit = Github(accessToken).gitData.getCommit("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891")
+```scala mdoc:compile-only
+val getCommit = Github[IO](accessToken).gitData.getCommit("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891")
 
-getCommit.exec[cats.Id]() match {
+getCommit.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -156,15 +163,16 @@ the commit will be written as a root commit. For a single parent, an array of on
 for a merge commit, an array of more than one should be provided.
 - `author`: object containing information about the author.
 
-```scala
-val createCommit = Github(accessToken).gitData.createCommit(
+```scala mdoc:compile-only
+val createCommit = Github[IO](accessToken).gitData.createCommit(
   "47deg",
   "github4s",
   "New access token",
   "827efc6d56897b048c772eb4087f854f46256132",
-  List("d3b048c1f500ee5450e5d7b3d1921ed3e7645891"))
+  List("d3b048c1f500ee5450e5d7b3d1921ed3e7645891"),
+  None)
 
-createCommit.exec[cats.Id]() match {
+createCommit.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -184,10 +192,10 @@ You can create a blob using `createBlob`; it takes as arguments:
 - `content`: the new blob's content.
 - `encoding`: the encoding used for content. Currently, "utf-8" and "base64" are supported. Default: "utf-8".
 
-```scala
-val createBlob = Github(accessToken).gitData.createBlob("47deg", "github4s", "New access token")
+```scala mdoc:compile-only
+val createBlob = Github[IO](accessToken).gitData.createBlob("47deg", "github4s", "New access token", Some("utf-8"))
 
-createBlob.exec[cats.Id]() match {
+createBlob.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -215,10 +223,10 @@ You can get a tree using `getTree`; it takes as arguments:
 - `sha`: the sha of the commit.
 - `recursive`: flag whether to get the tree recursively.
 
-```scala mdoc:silent
-val getTree = Github(accessToken).gitData.getTree("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891",true)
+```scala mdoc:compile-only
+val getTree = Github[IO](accessToken).gitData.getTree("47deg", "github4s", "d3b048c1f500ee5450e5d7b3d1921ed3e7645891", true)
 
-getTree.exec[cats.Id]() match {
+getTree.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -251,8 +259,9 @@ You can create a tree using `createTree`; it takes as arguments:
 - `content`: The content you want this file to have.
  GitHub will write this blob out and use that SHA for this entry. Use either this or `tree.sha`.
 
-```scala
-val createTree = Github(accessToken).gitData.createTree(
+```scala mdoc:compile-only
+import github4s.domain.TreeDataSha
+val createTree = Github[IO](accessToken).gitData.createTree(
   "47deg",
   "github4s",
   Some("827efc6d56897b048c772eb4087f854f46256132"),
@@ -260,14 +269,9 @@ val createTree = Github(accessToken).gitData.createTree(
     "project/plugins.sbt",
     "100644",
     "blob",
-    "827efc6d56897b048c772eb4087f854f46256132")),
-  "project/plugins.sbt",
-  "100644",
-  "blob",
-  "827efc6d56897b048c772eb4087f854f46256132",
-  "Sample Body")
+    "827efc6d56897b048c772eb4087f854f46256132")))
 
-createTree.exec[cats.Id]() match {
+createTree.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -291,8 +295,9 @@ You can create a tag using `createTag`; it takes as arguments:
 Normally this is a `commit`, but it can also be a `tree` or a `blob`.
 - `tagger`: Optional object containing information about the individual creating the tag.
 
-```scala
-val createTag = Github(accessToken).gitData.createTag(
+```scala mdoc:compile-only
+import github4s.domain.RefAuthor
+val createTag = Github[IO](accessToken).gitData.createTag(
   "47deg",
   "github4s",
   "v0.1.1",
@@ -301,7 +306,7 @@ val createTag = Github(accessToken).gitData.createTag(
   "commit",
   Some(RefAuthor("2014-11-07T22:01:45Z", "rafaparadela", "developer@47deg.com")))
 
-createTag.exec[cats.Id]() match {
+createTag.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -315,4 +320,4 @@ As you can see, a few features of the git data endpoint are missing.
 
 As a result, if you'd like to see a feature supported, feel free to create an issue and/or a pull request!
 
-[gitdata-scala]: https://github.com/47deg/github4s/blob/master/github4s/shared/src/main/scala/github4s/free/domain/GitData.scala
+[gitdata-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/GitData.scala

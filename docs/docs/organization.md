@@ -18,16 +18,17 @@ The following examples assume the following imports and token:
 
 ```scala mdoc:silent
 import github4s.Github
-import github4s.Github._
-import github4s.implicits._
+import github4s.GithubIOSyntax._
+import cats.effect.IO
+import scala.concurrent.ExecutionContext.Implicits.global
 
+implicit val IOContextShift = IO.contextShift(global)
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
 
-They also make use of `cats.Id`, but any type container implementing `MonadError[M, Throwable]` will do.
+They also make use of `cats.Id`, but any type container `F` implementing `ConcurrentEffect` will do.
 
-Support for `cats.Id`, `cats.Eval`, and `Future` are
-provided out of the box when importing `github4s.implicits._`.
+LiftIO syntax for `cats.Id` and `Future` are provided in `GithubIOSyntax`.
 
 ## Members
 
@@ -42,9 +43,9 @@ You can list the members for a particular organization with `listMembers`; it ta
 
 To list the members for organization `47deg`:
 
-```scala mdoc:silent
-val listMembers = Github(accessToken).organizations.listMembers("47deg")
-listMembers.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val listMembers = Github[IO](accessToken).organizations.listMembers("47deg")
+listMembers.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -66,9 +67,9 @@ You can list the outside collaborators of your organization with `listOutsideCol
 
 To list the outside collaborators for organization `47deg`:
 
-```scala mdoc:silent
-val outsideCollaborators = Github(accessToken).organizations.listOutsideCollaborators("47deg")
-outsideCollaborators.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val outsideCollaborators = Github[IO](accessToken).organizations.listOutsideCollaborators("47deg")
+outsideCollaborators.unsafeRunSync match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
   case Right(r) => println(r.result)
 }
@@ -82,4 +83,4 @@ As you can see, a few features of the organization endpoint are missing.
 
 As a result, if you'd like to see a feature supported, feel free to create an issue and/or a pull request!
 
-[user-scala]: https://github.com/47deg/github4s/blob/master/github4s/shared/src/main/scala/github4s/free/domain/User.scala
+[user-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/User.scala

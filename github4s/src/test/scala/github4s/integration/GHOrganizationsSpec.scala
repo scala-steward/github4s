@@ -16,21 +16,20 @@
 
 package github4s.integration
 
+import cats.effect.IO
 import github4s.Github
-import github4s.Github._
-import github4s.free.domain.User
-import github4s.implicits1._
+import github4s.domain._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
 trait GHOrganizationsSpec extends BaseIntegrationSpec {
 
   "Organization >> ListMembers" should "return the expected list of users" taggedAs Integration in {
     val response =
-      Github(accessToken).organizations
-        .listMembers(validRepoOwner)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).organizations
+        .listMembers(validRepoOwner, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[List[User]](response, { r =>
+    testIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
@@ -38,20 +37,20 @@ trait GHOrganizationsSpec extends BaseIntegrationSpec {
 
   it should "return error for an invalid org" taggedAs Integration in {
     val response =
-      Github(accessToken).organizations
-        .listMembers(invalidUsername)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).organizations
+        .listMembers(invalidUsername, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
   }
 
-  "Organization >> ListOutsideCollaborators" should "return expected list of users" taggedAs Integration in {
+  "Organization >> ListOutsideCollaborators" should "return expected list of users" ignore {
     val response =
-      Github(accessToken).organizations
-        .listOutsideCollaborators(validOrganizationName)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).organizations
+        .listOutsideCollaborators(validOrganizationName, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[List[User]](response, { r =>
+    testIsRight[List[User]](response, { r =>
       r.result.nonEmpty shouldBe true
       r.statusCode shouldBe okStatusCode
     })
@@ -59,11 +58,11 @@ trait GHOrganizationsSpec extends BaseIntegrationSpec {
 
   it should "return error for an invalid org" taggedAs Integration in {
     val response =
-      Github(accessToken).organizations
-        .listOutsideCollaborators(invalidOrganizationName)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).organizations
+        .listOutsideCollaborators(invalidOrganizationName, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
   }
 
 }

@@ -16,16 +16,11 @@
 
 package github4s
 
-import cats.free.Free
-import github4s.app.GitHub4s
-
 object GithubResponses {
-
-  type GHIO[A] = Free[GitHub4s, A]
 
   type GHResponse[A] = Either[GHException, GHResult[A]]
 
-  case class GHResult[A](result: A, statusCode: Int, headers: Map[String, IndexedSeq[String]])
+  case class GHResult[A](result: A, statusCode: Int, headers: Map[String, String])
 
   sealed abstract class GHException(msg: String, cause: Option[Throwable] = None)
       extends Throwable(msg) {
