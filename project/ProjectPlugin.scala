@@ -31,7 +31,7 @@ object ProjectPlugin extends AutoPlugin {
       val scala213: String     = "2.13.1"
       val http4s: String       = "0.21.0"
       val scalamock: String    = "4.4.0"
-      val scalaTest: String    = "3.1.0"
+      val scalaTest: String    = "3.1.1"
     }
 
     lazy val micrositeSettings = Seq(
