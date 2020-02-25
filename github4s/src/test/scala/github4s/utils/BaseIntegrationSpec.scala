@@ -19,16 +19,7 @@ package github4s.utils
 import cats.effect.IO
 
 import github4s.GithubResponses.{GHResponse, GHResult}
-import github4s.integration.{
-  GHActivitiesSpec,
-  GHAuthSpec,
-  GHGitDataSpec,
-  GHIssuesSpec,
-  GHOrganizationsSpec,
-  GHPullRequestsSpec,
-  GHReposSpec,
-  GHUsersSpec
-}
+import github4s.integration._
 import org.scalatest.{Assertion, Ignore, Inspectors, Tag}
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -45,6 +36,7 @@ class IntegrationSpec
     with GHPullRequestsSpec
     with GHReposSpec
     with GHUsersSpec
+    with GHTeamsSpec
 
 object Integration
     extends Tag(
