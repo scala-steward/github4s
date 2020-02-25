@@ -140,5 +140,5 @@ object ProjectPlugin extends AutoPlugin {
             !toPath.startsWith("github4s/BuildInfo")
         }
       }
-    ) ++ shellPromptSettings
+    ) ++ shellPromptSettings ++ sharedScoverageSettings(75d)
 }
