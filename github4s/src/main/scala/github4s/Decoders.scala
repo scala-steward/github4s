@@ -276,5 +276,8 @@ object Decoders {
         )
       )
 
-  implicit val decodeTeam: Decoder[Team] = deriveDecoder[Team]
+  implicit val decodeTeam: Decoder[Team]       = deriveDecoder[Team]
+  implicit val decodeProject: Decoder[Project] = deriveDecoder[Project]
+  implicit val decodeColumn: Decoder[Column]   = deriveDecoder[Column]
+
 }
