@@ -84,3 +84,22 @@ case class Comment(
 )
 
 case class CommentData(body: String)
+
+case class Milestone(
+    url: String,
+    html_url: String,
+    labels_url: String,
+    id: Int,
+    node_id: String,
+    number: Int,
+    state: String,
+    title: String,
+    description: String,
+    creator: Creator,
+    open_issues: Int,
+    closed_issues: Int,
+    created_at: String,
+    updated_at: String,
+    closed_at: Option[String],
+    due_on: String
+)

@@ -209,6 +209,22 @@ trait Issues[F[_]] {
   ): F[GHResponse[Unit]]
 
   /**
+   * List the labels assigned to a Repository
+   *
+   * @param owner of the repo
+   * @param repo name of the repo
+   * @param headers optional user headers to include in the request
+   * @param pagination Limit and Offset for pagination, optional.
+   * @return a GHResponse with the list of labels for the Repository.
+   */
+  def listLabelsRepository(
+      owner: String,
+      repo: String,
+      headers: Map[String, String] = Map(),
+      pagination: Option[Pagination] = None
+  ): F[GHResponse[List[Label]]]
+
+  /**
    * List the labels assigned to an Issue
    *
    * @param owner of the repo
@@ -275,4 +291,27 @@ trait Issues[F[_]] {
       pagination: Option[Pagination] = None,
       headers: Map[String, String] = Map()
   ): F[GHResponse[List[User]]]
+
+  /**
+   * List milestone in specified repository
+   *
+   * @param owner repo owner
+   * @param repo repo name
+   * @param state filter milestones returned by their state. Can be either `open`, `closed`, `all`. Default: `open`
+   * @param sort What to sort results by. Either due_on or completeness. Default: due_on
+   * @param direction The direction of the sort. Either asc or desc. Default: asc
+   * @param pagination Limit and Offset for pagination
+   * @param headers optional user headers to include in the request
+   * @return a GHResponse with the list of milestones in specified repository
+   */
+  def listMilestones(
+      owner: String,
+      repo: String,
+      state: Option[String],
+      sort: Option[String],
+      direction: Option[String],
+      pagination: Option[Pagination] = None,
+      headers: Map[String, String] = Map()
+  ): F[GHResponse[List[Milestone]]]
+
 }

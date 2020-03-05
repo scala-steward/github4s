@@ -136,6 +136,19 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
   ): F[GHResponse[Unit]] =
     client.delete(accessToken, s"repos/$owner/$repo/issues/comments/$id", headers)
 
+  override def listLabelsRepository(
+      owner: String,
+      repo: String,
+      headers: Map[String, String],
+      pagination: Option[Pagination]
+  ): F[GHResponse[List[Label]]] =
+    client.get[List[Label]](
+      accessToken,
+      s"repos/$owner/$repo/labels",
+      headers = headers,
+      pagination = pagination
+    )
+
   override def listLabels(
       owner: String,
       repo: String,
@@ -182,5 +195,23 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       s"repos/$owner/$repo/assignees",
       headers,
       pagination = pagination
+    )
+
+  override def listMilestones(
+      owner: String,
+      repo: String,
+      state: Option[String],
+      sort: Option[String],
+      direction: Option[String],
+      pagination: Option[Pagination],
+      headers: Map[String, String]
+  ): F[GHResponse[List[Milestone]]] =
+    client.get[List[Milestone]](
+      accessToken,
+      s"repos/$owner/$repo/milestones",
+      headers,
+      pagination = pagination,
+      params =
+        List(state.map("state" -> _), sort.map("sort" -> _), direction.map("direction" -> _)).flatten.toMap
     )
 }

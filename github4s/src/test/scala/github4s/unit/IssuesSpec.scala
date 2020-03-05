@@ -203,6 +203,19 @@ class IssuesSpec extends BaseSpec {
     issues.deleteComment(validRepoOwner, validRepoName, validCommentId, headerUserAgent)
   }
 
+  "Issues.ListLabelsRepository" should "call httpClient.get with the right parameters" in {
+    val response: IO[GHResponse[List[Label]]] =
+      IO(Right(GHResult(List(label), okStatusCode, Map.empty)))
+
+    implicit val httpClientMock = httpClientMockGet[List[Label]](
+      url = s"repos/$validRepoOwner/$validRepoName/labels",
+      response = response
+    )
+
+    val issues = new IssuesInterpreter[IO]
+    issues.listLabelsRepository(validRepoOwner, validRepoName, headerUserAgent)
+  }
+
   "Issues.ListLabels" should "call httpClient.get with the right parameters" in {
     val response: IO[GHResponse[List[Label]]] =
       IO(Right(GHResult(List(label), okStatusCode, Map.empty)))
@@ -271,6 +284,27 @@ class IssuesSpec extends BaseSpec {
     issues.listAvailableAssignees(
       validRepoOwner,
       validRepoName,
+      Some(Pagination(validPage, validPerPage)),
+      headerUserAgent
+    )
+  }
+
+  "Issues.listMilestone" should "call httpClient.get with the right parameters" in {
+    val response: IO[GHResponse[List[Milestone]]] =
+      IO(Right(GHResult(List(), okStatusCode, Map.empty)))
+
+    implicit val httpClientMock = httpClientMockGet[List[Milestone]](
+      url = s"repos/$validRepoOwner/$validRepoName/milestones",
+      response = response
+    )
+
+    val issues = new IssuesInterpreter[IO]
+    issues.listMilestones(
+      validRepoOwner,
+      validRepoName,
+      None,
+      None,
+      None,
       Some(Pagination(validPage, validPerPage)),
       headerUserAgent
     )
