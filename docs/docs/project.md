@@ -3,7 +3,7 @@ layout: docs
 title: Project API
 permalink: project
 ---
-
+ 
 # Project API
 
 Note: The Projects API is currently available for developers to preview. During the preview period,
@@ -19,6 +19,8 @@ with Github4s, you can interact with:
   - [List projects](#list-projects)
   - [Columns](#columns)
     - [List project columns](#list-project-columns)
+  - [Cards](#cards)
+    - [List project cards](#list-project-cards-by-column)
 
 The following examples assume the following imports and token:
 
@@ -124,4 +126,35 @@ The `result` on the right is the corresponding [List[Column]][column-scala].
 
 See [the API doc](https://developer.github.com/v3/projects/columns/#list-project-columns) for full reference.
 
-[column-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/Column.scala
+[column-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/Project.scala
+
+### Cards
+
+#### List project cards by column
+
+You can list the cards for a particular column with `listCards`; it takes as arguments:
+
+- `column_id`: column id for which we want to retrieve the cards.
+- `archived_state`: filters the project cards that are returned by the card's state. 
+Can be one of `all`,`archived`, or `not_archived`. Default: `not_archived`, optional.
+- `pagination`: Limit and Offset for pagination, optional.
+- `header`: headers to include in the request, optional.
+
+To list the columns for project_id `8271018`:
+
+```scala mdoc:compile-only
+val listCards = Github[IO](accessToken).projects.listCards(
+    column_id = 8271018,
+    headers = Map("Accept" -> "application/vnd.github.inertia-preview+json"))
+val response = listCards.unsafeRunSync()
+response.result match {
+  case Left(e) => println(s"Something went wrong: ${e.getMessage}")
+  case Right(r) => println(r)
+}
+```
+
+The `result` on the right is the corresponding [List[Card]][card-scala].
+
+See [the API doc](https://developer.github.com/v3/projects/cards/#list-project-cards) for full reference.
+
+[card-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/Project.scala
