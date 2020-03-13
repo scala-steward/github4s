@@ -16,171 +16,203 @@
 
 package github4s.integration
 
+import cats.effect.IO
 import github4s.Github
-import github4s.Github._
-import github4s.free.domain._
-import github4s.implicits1._
+import github4s.domain._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
 trait GHPullRequestsSpec extends BaseIntegrationSpec {
 
   "PullRequests >> Get" should "return a right response when a valid pr number is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .get(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .getPullRequest(
+          validRepoOwner,
+          validRepoName,
+          validPullRequestNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[PullRequest](response, { r =>
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[PullRequest](response)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return an error when a valid issue number is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .get(validRepoOwner, validRepoName, validIssueNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .getPullRequest(validRepoOwner, validRepoName, validIssueNumber, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   it should "return an error when an invalid repo name is passed" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .get(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .getPullRequest(
+          validRepoOwner,
+          invalidRepoName,
+          validPullRequestNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "PullRequests >> List" should "return a right response when valid repo is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .list(validRepoOwner, validRepoName, pagination = Some(Pagination(1, 10)))
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listPullRequests(
+          validRepoOwner,
+          validRepoName,
+          pagination = Some(Pagination(1, 10)),
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequest]](response, { r =>
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequest]](response)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return a right response when a valid repo is provided but not all pull requests have body" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .list("lloydmeta", "gh-test-repo", List(PRFilterOpen))
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listPullRequests(
+          "lloydmeta",
+          "gh-test-repo",
+          List(PRFilterOpen),
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequest]](response, { r =>
-      r.result.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequest]](response, r => r.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return a non empty list when valid repo and some filters are provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .list(
+      Github[IO](accessToken).pullRequests
+        .listPullRequests(
           validRepoOwner,
           validRepoName,
-          List(PRFilterAll, PRFilterSortCreated, PRFilterOrderAsc))
-        .execFuture(headerUserAgent)
+          List(PRFilterAll, PRFilterSortCreated, PRFilterOrderAsc),
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequest]](response, { r =>
-      r.result.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequest]](response, r => r.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return error when an invalid repo name is passed" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .list(validRepoOwner, invalidRepoName)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listPullRequests(validRepoOwner, invalidRepoName, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "PullRequests >> ListFiles" should "return a right response when a valid repo is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .listFiles(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listFiles(validRepoOwner, validRepoName, validPullRequestNumber, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequestFile]](response, { r =>
-      r.result.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequestFile]](response, r => r.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return a right response when a valid repo is provided and not all files have 'patch'" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .listFiles("scala", "scala", 4877)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listFiles("scala", "scala", 4877, headers = headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequestFile]](response, { r =>
-      r.result.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequestFile]](response, r => r.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return error when an invalid repo name is passed" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .listFiles(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listFiles(
+          validRepoOwner,
+          invalidRepoName,
+          validPullRequestNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "PullRequests >> ListReviews" should "return a right response when a valid pr is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .listReviews(validRepoOwner, validRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listReviews(
+          validRepoOwner,
+          validRepoName,
+          validPullRequestNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[List[PullRequestReview]](response, { r =>
-      r.result.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[List[PullRequestReview]](response, r => r.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return error when an invalid repo name is passed" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
-        .listReviews(validRepoOwner, invalidRepoName, validPullRequestNumber)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).pullRequests
+        .listReviews(
+          validRepoOwner,
+          invalidRepoName,
+          validPullRequestNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "PullRequests >> GetReview" should "return a right response when a valid pr review is provided" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
+      Github[IO](accessToken).pullRequests
         .getReview(
           validRepoOwner,
           validRepoName,
           validPullRequestNumber,
-          validPullRequestReviewNumber)
-        .execFuture(headerUserAgent)
+          validPullRequestReviewNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsRight[PullRequestReview](response, { r =>
-      r.result.id shouldBe validPullRequestReviewNumber
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[PullRequestReview](response, r => r.id shouldBe validPullRequestReviewNumber)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return error when an invalid repo name is passed" taggedAs Integration in {
     val response =
-      Github(accessToken).pullRequests
+      Github[IO](accessToken).pullRequests
         .getReview(
           validRepoOwner,
           invalidRepoName,
           validPullRequestNumber,
-          validPullRequestReviewNumber)
-        .execFuture(headerUserAgent)
+          validPullRequestReviewNumber,
+          headers = headerUserAgent
+        )
+        .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
 }

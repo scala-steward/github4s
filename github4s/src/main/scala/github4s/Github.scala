@@ -16,55 +16,39 @@
 
 package github4s
 
-import cats.data.{EitherT, Kleisli}
-import cats.MonadError
-import cats.implicits._
-import github4s.GithubResponses._
-import github4s.free.interpreters.Interpreters
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import cats.effect.ConcurrentEffect
+import github4s.algebras._
+import github4s.modules._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
 
-import scala.concurrent.Future
+class Github[F[_]: ConcurrentEffect](accessToken: Option[String], timeout: Option[Duration])(
+    implicit ec: ExecutionContext
+) {
 
-/**
- * Represent the Github API wrapper
- * @param accessToken to identify the authenticated user
- */
-class Github(accessToken: Option[String] = None) {
+  private lazy val module: GithubAPIs[F] =
+    new GithubAPIv3[F](accessToken, timeout.getOrElse(Duration(1000L, MILLISECONDS)))
 
-  lazy val users         = new GHUsers(accessToken)
-  lazy val repos         = new GHRepos(accessToken)
-  lazy val auth          = new GHAuth
-  lazy val gists         = new GHGists(accessToken)
-  lazy val issues        = new GHIssues(accessToken)
-  lazy val activities    = new GHActivities(accessToken)
-  lazy val gitData       = new GHGitData(accessToken)
-  lazy val pullRequests  = new GHPullRequests(accessToken)
-  lazy val organizations = new GHOrganizations(accessToken)
-
+  lazy val users: Users[F]                 = module.users
+  lazy val repos: Repositories[F]          = module.repos
+  lazy val auth: Auth[F]                   = module.auth
+  lazy val gists: Gists[F]                 = module.gists
+  lazy val issues: Issues[F]               = module.issues
+  lazy val activities: Activities[F]       = module.activities
+  lazy val gitData: GitData[F]             = module.gitData
+  lazy val pullRequests: PullRequests[F]   = module.pullRequests
+  lazy val organizations: Organizations[F] = module.organizations
+  lazy val teams: Teams[F]                 = module.teams
+  lazy val projects: Projects[F]           = module.projects
 }
 
-/** Companion object for [[github4s.Github]] */
 object Github {
-  def apply(accessToken: Option[String] = None) = new Github(accessToken)
 
-  implicit class GithubIOSyntaxEither[A](gio: GHIO[GHResponse[A]]) {
+  def apply[F[_]: ConcurrentEffect](
+      accessToken: Option[String] = None,
+      timeout: Option[Duration] = None
+  )(implicit ec: ExecutionContext): Github[F] =
+    new Github[F](accessToken, timeout)
 
-    def execK[M[_]](
-        implicit I: Interpreters[M],
-        A: MonadError[M, Throwable]): Kleisli[M, Map[String, String], GHResponse[A]] =
-      gio foldMap I.interpreters
-
-    def exec[M[_]](headers: Map[String, String] = Map())(
-        implicit I: Interpreters[M],
-        A: MonadError[M, Throwable]): M[GHResponse[A]] =
-      execK.run(headers)
-
-    def execFuture(headers: Map[String, String] = Map())(
-        implicit I: Interpreters[Future],
-        A: MonadError[Future, Throwable]): Future[GHResponse[A]] =
-      exec[Future](headers)
-
-    def liftGH: EitherT[GHIO, GHException, GHResult[A]] =
-      EitherT[GHIO, GHException, GHResult[A]](gio)
-
-  }
 }

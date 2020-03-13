@@ -22,16 +22,16 @@ The following examples assume the following imports and token:
 
 ```scala mdoc:silent
 import github4s.Github
-import github4s.Github._
-import github4s.implicits._
+import github4s.GithubIOSyntax._
+import cats.effect.IO
+import scala.concurrent.ExecutionContext.Implicits.global
 
+implicit val IOContextShift = IO.contextShift(global)
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
+They also make use of `cats.Id`, but any type container `F` implementing `ConcurrentEffect` will do.
 
-They also make use of `cats.Id`, but any type container implementing `MonadError[M, Throwable]` will do.
-
-Support for `cats.Id`, `cats.Eval`, and `Future` are
-provided out of the box when importing `github4s.implicits._`.
+LiftIO syntax for `cats.Id` and `Future` are provided in `GithubIOSyntax`.
 
 ## Pull requests
 
@@ -44,12 +44,12 @@ You can get a single pull request for a repository using `get`; it takes as argu
 
 To get a single pull request:
 
-```scala mdoc:silent
-val getPullRequest = Github(accessToken).pullRequests.get("47deg", "github4s", 102)
-
-getPullRequest.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val getPullRequest = Github[IO](accessToken).pullRequests.getPullRequest("47deg", "github4s", 102)
+val response = getPullRequest.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -67,14 +67,14 @@ You can list the pull requests for a repository using `list`; it takes as argume
 As an example, let's say we want the open pull requests in <https://github.com/scala/scala> sorted
 by popularity:
 
-```scala mdoc:silent
-import github4s.free.domain._
+```scala mdoc:compile-only
+import github4s.domain._
 val prFilters = List(PRFilterOpen, PRFilterSortPopularity)
-val listPullRequests = Github(accessToken).pullRequests.list("scala", "scala", prFilters)
-
-listPullRequests.exec[cats.Id]() match {
+val listPullRequests = Github[IO](accessToken).pullRequests.listPullRequests("scala", "scala", prFilters)
+val response = listPullRequests.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -91,12 +91,12 @@ You can also list the files for a pull request using `listFiles`; it takes as ar
 
 To list the files for a pull request:
 
-```scala mdoc:silent
-val listPullRequestFiles = Github(accessToken).pullRequests.listFiles("47deg", "github4s", 102)
-
-listPullRequestFiles.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val listPullRequestFiles = Github[IO](accessToken).pullRequests.listFiles("47deg", "github4s", 102)
+val response = listPullRequestFiles.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -118,18 +118,20 @@ On the one hand, we can pass the following parameters:
  - `base`: The name of the branch you want the changes pulled into.
  - `maintainerCanModify`: Optional. Indicates whether maintainers can modify the pull request. `true` by default.
 
-```scala
-val createPullRequestData = Github(accessToken).pullRequests.create(
+```scala mdoc:compile-only
+import github4s.domain.NewPullRequestData
+
+val createPullRequestData = Github[IO](accessToken).pullRequests.createPullRequest(
   "47deg",
   "github4s",
-  NewPullRequestData("title","body"),
+  NewPullRequestData("title", "body"),
   "my-branch",
   "base-branch",
   Some(true))
-
-createPullRequestData.exec[cats.Id]() match {
+val response = createPullRequestData.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -138,18 +140,19 @@ instead of the title and body.
 
 **NOTE**: This option deletes the issue.
 
-```scala
-val createPullRequestIssue = Github(accessToken).pullRequests.create(
+```scala mdoc:compile-only
+import github4s.domain.NewPullRequestIssue
+val createPullRequestIssue = Github[IO](accessToken).pullRequests.createPullRequest(
   "47deg",
   "github4s",
-  NewPullRequestIssue("105"),
+  NewPullRequestIssue(105),
   "my-branch",
   "base-branch",
   Some(true))
-
-createPullRequestIssue.exec[cats.Id]() match {
+val response = createPullRequestIssue.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -166,15 +169,15 @@ You can list the reviews for a pull request using `listReviews`; it takes as arg
 
 As an example, if we wanted to see all the reviews for pull request 139 of `47deg/github4s`:
 
-```scala mdoc:silent
-val listReviews = Github(accessToken).pullRequests.listReviews(
+```scala mdoc:compile-only
+val listReviews = Github[IO](accessToken).pullRequests.listReviews(
   "47deg",
   "github4s",
   139)
-
-listReviews.exec[cats.Id]() match {
+val response = listReviews.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -192,16 +195,16 @@ You can get an individual review for a pull request using `getReview`; it takes 
 
 As an example, if we wanted to see review 39355613 for pull request 139 of `47deg/github4s`:
 
-```scala mdoc:silent
-val review = Github(accessToken).pullRequests.getReview(
+```scala mdoc:compile-only
+val review = Github[IO](accessToken).pullRequests.getReview(
   "47deg",
   "github4s",
   139,
   39355613)
-
-review.exec[cats.Id]() match {
+val response = review.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -212,4 +215,4 @@ See [the API doc](https://developer.github.com/v3/pulls/reviews/#get-a-single-re
 As you can see, a few features of the pull request endpoint are missing. As a result, if you'd like
 to see a feature supported, feel free to create an issue and/or a pull request!
 
-[pr-scala]: https://github.com/47deg/github4s/blob/master/github4s/shared/src/main/scala/github4s/free/domain/PullRequest.scala
+[pr-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/PullRequest.scala

@@ -21,18 +21,17 @@ object ProjectPlugin extends AutoPlugin {
   object autoImport {
 
     lazy val V = new {
-      val base64: String       = "0.2.9"
-      val cats: String         = "2.1.0"
-      val catsEffect: String   = "2.1.1"
-      val circe: String        = "0.13.0"
-      val circeJackson: String = "0.12.1"
-      val paradise: String     = "2.1.1"
-      val simulacrum: String   = "0.19.0"
-      val scala212: String     = "2.12.10"
-      val scala213: String     = "2.13.1"
-      val scalaj: String       = "2.4.2"
-      val scalamock: String    = "4.4.0"
-      val scalaTest: String    = "3.1.0"
+      val base64: String     = "0.2.9"
+      val cats: String       = "2.1.1"
+      val catsEffect: String = "2.1.1"
+      val circe: String      = "0.13.0"
+      val paradise: String   = "2.1.1"
+      val simulacrum: String = "0.19.0"
+      val scala212: String   = "2.12.10"
+      val scala213: String   = "2.13.1"
+      val http4s: String     = "0.21.1"
+      val scalamock: String  = "4.4.0"
+      val scalaTest: String  = "3.1.1"
     }
 
     lazy val micrositeSettings = Seq(
@@ -47,14 +46,20 @@ object ProjectPlugin extends AutoPlugin {
       micrositePushSiteWith := GitHub4s,
       micrositeOrganizationHomepage := "https://github.com/47deg/github4s/blob/master/AUTHORS.md",
       micrositePalette := Map(
-        "brand-primary"         -> "#3D3832",
-        "brand-secondary"       -> "#f90",
-        "white-color"           -> "#FFFFFF"),
+        "brand-primary"   -> "#3D3832",
+        "brand-secondary" -> "#f90",
+        "white-color"     -> "#FFFFFF"
+      ),
       micrositeExtraMdFiles := Map(
         file("CHANGELOG.md") -> ExtraMdFileConfig(
           "changelog.md",
           "page",
-          Map("title" -> "Changelog", "section" -> "home", "position" -> "3", "permalink" -> "changelog")
+          Map(
+            "title"     -> "Changelog",
+            "section"   -> "home",
+            "position"  -> "3",
+            "permalink" -> "changelog"
+          )
         )
       ),
       micrositeExtraMdFilesOutput := mdocIn.value,
@@ -69,14 +74,16 @@ object ProjectPlugin extends AutoPlugin {
         %%("simulacrum", V.simulacrum),
         %%("circe-core", V.circe),
         %%("circe-generic", V.circe),
-        "io.circe" %% "circe-jackson28" % V.circeJackson,
+        "io.circe" %% "circe-literal" % V.circe,
         %%("base64", V.base64),
-        %%("scalaj", V.scalaj),
+        "org.http4s"                 %% "http4s-blaze-client" % V.http4s,
+        "org.http4s"                 %% "http4s-circe" % V.http4s,
         %%("circe-parser", V.circe)  % Test,
         %%("scalamock", V.scalamock) % Test,
         %%("scalatest", V.scalaTest) % Test,
-        "org.mock-server"            % "mockserver-netty" % "5.8.1" % Test excludeAll ExclusionRule(
-          "com.twitter")
+        "org.mock-server"            % "mockserver-netty" % "5.9.0" % Test excludeAll ExclusionRule(
+          "com.twitter"
+        )
       ),
       libraryDependencies ++= (CrossVersion.partialVersion(scalaBinaryVersion.value) match {
         case Some((2, 13)) => Seq.empty[ModuleID]
@@ -84,16 +91,8 @@ object ProjectPlugin extends AutoPlugin {
       })
     )
 
-    lazy val docsDependencies: Def.Setting[Seq[ModuleID]] = libraryDependencies += %%(
-      "scalatest",
-      V.scalaTest)
-
-    lazy val catsEffectDependencies = Seq(
-      libraryDependencies ++= Seq(
-        %%("cats-effect", V.catsEffect),
-        %%("scalatest", V.scalaTest) % Test
-      )
-    )
+    lazy val docsDependencies: Def.Setting[Seq[ModuleID]] =
+      libraryDependencies += %%("scalatest", V.scalaTest)
 
     def toCompileTestList(sequence: Seq[ProjectReference]): List[String] = sequence.toList.map {
       p =>
@@ -111,7 +110,7 @@ object ProjectPlugin extends AutoPlugin {
       description := "Github API wrapper written in Scala",
       startYear := Option(2016),
       resolvers += Resolver.sonatypeRepo("snapshots"),
-      scalaVersion := V.scala212,
+      scalaVersion := V.scala213,
       crossScalaVersions := Seq(V.scala212, V.scala213),
       scalacOptions := {
         val withStripedLinter = scalacOptions.value filterNot Set("-Xlint", "-Xfuture").contains
@@ -143,5 +142,5 @@ object ProjectPlugin extends AutoPlugin {
             !toPath.startsWith("github4s/BuildInfo")
         }
       }
-    ) ++ shellPromptSettings
+    ) ++ shellPromptSettings ++ sharedScoverageSettings(75d)
 }

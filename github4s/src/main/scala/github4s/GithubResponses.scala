@@ -16,32 +16,22 @@
 
 package github4s
 
-import cats.free.Free
-import github4s.app.GitHub4s
-
 object GithubResponses {
 
-  type GHIO[A] = Free[GitHub4s, A]
-
-  type GHResponse[A] = Either[GHException, GHResult[A]]
-
-  case class GHResult[A](result: A, statusCode: Int, headers: Map[String, IndexedSeq[String]])
+  final case class GHResponse[A](
+      result: Either[GHException, A],
+      statusCode: Int,
+      headers: Map[String, String]
+  )
 
   sealed abstract class GHException(msg: String, cause: Option[Throwable] = None)
       extends Throwable(msg) {
     cause foreach initCause
   }
 
-  case class JsonParsingException(
+  final case class JsonParsingException(
       msg: String,
       json: String
   ) extends GHException(msg)
-
-  case class UnsuccessfulHttpRequest(
-      msg: String,
-      statusCode: Int
-  ) extends GHException(msg)
-
-  case class UnexpectedException(msg: String) extends GHException(msg)
 
 }

@@ -19,11 +19,16 @@ The following examples assume the following imports and token:
 
 ```scala mdoc:silent
 import github4s.Github
-import github4s.Github._
-import github4s.implicits._
+import github4s.GithubIOSyntax._
+import cats.effect.IO
+import scala.concurrent.ExecutionContext.Implicits.global
 
+implicit val IOContextShift = IO.contextShift(global)
 val accessToken = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 ```
+They also make use of `cats.Id`, but any type container `F` implementing `ConcurrentEffect` will do.
+
+LiftIO syntax for `cats.Id` and `Future` are provided in `GithubIOSyntax`.
 
 ## Users
 
@@ -35,11 +40,12 @@ You can get a user using `get`, it takes as argument:
 
 - `username`: of the user to retrieve.
 
-```scala mdoc:silent
-val getUser = Github(accessToken).users.get("rafaparadela")
-getUser.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val getUser = Github[IO](accessToken).users.get("rafaparadela")
+val response = getUser.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -54,11 +60,12 @@ Get information of the authenticated user making the API call.
 
 You can get an authenticated user using `getAuth`:
 
-```scala mdoc:silent
-val getAuth = Github(accessToken).users.getAuth
-getAuth.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val getAuth = Github[IO](accessToken).users.getAuth()
+val response = getAuth.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -74,11 +81,12 @@ You can get a list of users using `getUsers`, it takes as arguments:
 - `since`: The integer ID of the last User that you've seen.
 - `pagination`: Limit and Offset for pagination.
 
-```scala mdoc:silent
-val getUsers = Github(accessToken).users.getUsers(1)
-getUsers.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val getUsers = Github[IO](accessToken).users.getUsers(1)
+val response = getUsers.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
@@ -90,22 +98,23 @@ As you can see, a few features of the user endpoint are missing.
 
 As a result, if you'd like to see a feature supported, feel free to create an issue and/or a pull request!
 
-[user-scala]: https://github.com/47deg/github4s/blob/master/github4s/shared/src/main/scala/github4s/free/domain/User.scala
-
 ### List users followed by another user
 
 You can get a list of users followed by another user using `getFollowing`, it takes as argument:
 
 - `username`: of the user to retrieve.
 
-```scala mdoc:silent
-val getFollowing = Github(accessToken).users.getFollowing("rafaparadela")
-getFollowing.exec[cats.Id]() match {
+```scala mdoc:compile-only
+val getFollowing = Github[IO](accessToken).users.getFollowing("rafaparadela")
+val response = getFollowing.unsafeRunSync()
+response.result match {
   case Left(e) => println(s"Something went wrong: ${e.getMessage}")
-  case Right(r) => println(r.result)
+  case Right(r) => println(r)
 }
 ```
 
 The `result` on the right is the corresponding [List[User]][user-scala].
 
 See [the API doc](https://developer.github.com/v3/users/followers/#list-users-followed-by-another-use) for full reference.
+
+[user-scala]: https://github.com/47deg/github4s/blob/master/github4s/src/main/scala/github4s/domain/User.scala

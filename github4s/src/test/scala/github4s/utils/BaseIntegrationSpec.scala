@@ -16,17 +16,33 @@
 
 package github4s.utils
 
-import github4s.GithubResponses.{GHResponse, GHResult}
-import github4s.HttpRequestBuilderExtension
-import github4s.free.interpreters.{Capture, Interpreters}
-import org.scalatest.{Assertion, Ignore, Inspectors, Tag}
+import cats.effect.IO
+import github4s.GithubResponses.GHResponse
+import github4s.integration._
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.{Assertion, Ignore, Inspectors, Tag}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+
+class IntegrationSpec
+    extends BaseIntegrationSpec
+    with GHActivitiesSpec
+    with GHAuthSpec
+    with GHGitDataSpec
+    with GHIssuesSpec
+    with GHOrganizationsSpec
+    with GHPullRequestsSpec
+    with GHReposSpec
+    with GHUsersSpec
+    with GHTeamsSpec
+    with GHProjectsSpec
 
 object Integration
-    extends Tag(if (sys.env.get("GITHUB4S_ACCESS_TOKEN").isDefined) "" else classOf[Ignore].getName)
+    extends Tag(
+      if (sys.env.get("GITHUB4S_ACCESS_TOKEN").isDefined) ""
+      else classOf[Ignore].getName
+    )
 
 abstract class BaseIntegrationSpec
     extends AsyncFlatSpec
@@ -36,24 +52,18 @@ abstract class BaseIntegrationSpec
   override implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  implicit def futureInterpreters: Interpreters[Future]
-  implicit def extension(implicit capture: Capture[Future]): HttpRequestBuilderExtension[Future]
+  implicit val ioContextShift = IO.contextShift(executionContext)
 
-  def accessToken: Option[String]
+  def accessToken: Option[String] = sys.env.get("GITHUB4S_ACCESS_TOKEN")
 
-  def testFutureIsLeft[A](response: Future[GHResponse[A]]): Future[Assertion] =
-    response map { r =>
-      r.isLeft shouldBe true
+  def testIsRight[A](response: GHResponse[A], f: A => Assertion = (_: A) => succeed): Assertion = {
+    response.result.isRight shouldBe true
+    response.result.toOption map (f(_)) match {
+      case _ => succeed
     }
+  }
 
-  def testFutureIsRight[A](
-      response: Future[GHResponse[A]],
-      f: (GHResult[A]) => Assertion): Future[Assertion] =
-    response map { r =>
-      r.isRight shouldBe true
-      r.toOption map (f(_)) match {
-        case _ => succeed
-      }
-    }
+  def testIsLeft[A](response: GHResponse[A]): Assertion =
+    response.result.isLeft shouldBe true
 
 }

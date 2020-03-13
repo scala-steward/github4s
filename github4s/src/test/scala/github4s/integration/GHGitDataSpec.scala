@@ -16,104 +16,101 @@
 
 package github4s.integration
 
+import cats.effect.IO
 import cats.data.NonEmptyList
 import github4s.Github
-import github4s.Github._
-import github4s.free.domain.{Ref, RefCommit, TreeResult}
-import github4s.implicits1._
+import github4s.domain._
 import github4s.utils.{BaseIntegrationSpec, Integration}
 
 trait GHGitDataSpec extends BaseIntegrationSpec {
 
   "GitData >> GetReference" should "return a list of references" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getReference(validRepoOwner, validRepoName, "heads")
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getReference(validRepoOwner, validRepoName, "heads", headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[NonEmptyList[Ref]](response, { r =>
-      r.result.tail.nonEmpty shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[NonEmptyList[Ref]](response, r => r.tail.nonEmpty shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return at least one reference" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getReference(validRepoOwner, validRepoName, validRefSingle)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getReference(validRepoOwner, validRepoName, validRefSingle, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[NonEmptyList[Ref]](response, { r =>
-      r.result.head.ref.contains(validRefSingle) shouldBe true
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[NonEmptyList[Ref]](response, r => r.head.ref.contains(validRefSingle) shouldBe true)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getReference(validRepoOwner, invalidRepoName, validRefSingle)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getReference(validRepoOwner, invalidRepoName, validRefSingle, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "GitData >> GetCommit" should "return one commit" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getCommit(validRepoOwner, validRepoName, validCommitSha)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getCommit(validRepoOwner, validRepoName, validCommitSha, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsRight[RefCommit](response, { r =>
-      r.result.message shouldBe validCommitMsg
-      r.statusCode shouldBe okStatusCode
-    })
+    testIsRight[RefCommit](response, r => r.message shouldBe validCommitMsg)
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getCommit(validRepoOwner, invalidRepoName, validCommitSha)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getCommit(validRepoOwner, invalidRepoName, validCommitSha, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
   "GitData >> GetTree" should "return the file tree non-recursively" taggedAs Integration in {
     val response =
-      Github(accessToken).gitData
-        .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = false)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).gitData
+        .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = false, headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[TreeResult](
+    testIsRight[TreeResult](
       response, { r =>
-        r.statusCode shouldBe okStatusCode
-        r.result.tree.map(_.path) shouldBe List(".gitignore", "build.sbt", "project")
-        r.result.truncated shouldBe Some(false)
+        r.tree.map(_.path) shouldBe List(".gitignore", "build.sbt", "project")
+        r.truncated shouldBe Some(false)
       }
     )
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return the file tree recursively" taggedAs Integration in {
     val response =
-      Github(accessToken).gitData
-        .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = true)
-        .execFuture(headerUserAgent)
+      Github[IO](accessToken).gitData
+        .getTree(validRepoOwner, validRepoName, validCommitSha, recursive = true, headerUserAgent)
+        .unsafeRunSync()
 
-    testFutureIsRight[TreeResult](
+    testIsRight[TreeResult](
       response, { r =>
-        r.statusCode shouldBe okStatusCode
-        r.result.tree.map(_.path) shouldBe List(
+        r.tree.map(_.path) shouldBe List(
           ".gitignore",
           "build.sbt",
           "project",
           "project/build.properties",
-          "project/plugins.sbt")
+          "project/plugins.sbt"
+        )
       }
     )
+    response.statusCode shouldBe okStatusCode
   }
 
   it should "return an error when an invalid repository name is passed" taggedAs Integration in {
-    val response = Github(accessToken).gitData
-      .getTree(validRepoOwner, invalidRepoName, validCommitSha, recursive = false)
-      .execFuture(headerUserAgent)
+    val response = Github[IO](accessToken).gitData
+      .getTree(validRepoOwner, invalidRepoName, validCommitSha, recursive = false, headerUserAgent)
+      .unsafeRunSync()
 
-    testFutureIsLeft(response)
+    testIsLeft(response)
+    response.statusCode shouldBe notFoundStatusCode
   }
 
 }

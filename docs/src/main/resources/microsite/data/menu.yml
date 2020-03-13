@@ -28,3 +28,9 @@ options:
 
   - title: Organization API
     url: organization
+
+  - title: Team API
+    url: team
+
+  - title: Project API
+    url: project

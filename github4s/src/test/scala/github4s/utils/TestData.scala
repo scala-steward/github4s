@@ -17,13 +17,18 @@
 package github4s.utils
 
 import com.github.marklister.base64.Base64._
-import github4s.free.domain._
+import github4s.domain._
 import java.util.UUID
+
+import github4s.domain.{Stargazer, StarredRepository, Subscription}
 
 trait TestData extends DummyGithubUrls {
 
   val sampleToken: Option[String]          = Some("token")
   val headerUserAgent: Map[String, String] = Map("user-agent" -> "github4s")
+  val headerAccept: Map[String, String] = Map(
+    "Accept" -> "application/vnd.github.inertia-preview+json"
+  )
 
   val validUsername   = "rafaparadela"
   val invalidUsername = "GHInvalidUserName"
@@ -33,6 +38,7 @@ trait TestData extends DummyGithubUrls {
   val user         = User(1, validUsername, githubApiUrl, githubApiUrl)
 
   def validBasicAuth = s"Basic ${s"$validUsername:".getBytes.toBase64}"
+
   def invalidBasicAuth =
     s"Basic ${s"$validUsername:$invalidPassword".getBytes.toBase64}"
 
@@ -83,10 +89,7 @@ trait TestData extends DummyGithubUrls {
   val validSearchQuery       = "Scala 2.12"
   val nonExistentSearchQuery = "nonExistentSearchQueryString"
   val validSearchParams = List(
-    OwnerParamInRepository(s"$validRepoOwner/$validRepoName"),
-    LabelParam(label = "enhancement"),
-    IssueTypeIssue,
-    SearchIn(Set(SearchInTitle))
+    OwnerParamInRepository(s"$validRepoOwner/$validRepoName")
   )
 
   val validIssueNumber = 48
@@ -135,9 +138,12 @@ trait TestData extends DummyGithubUrls {
   val validStatusState = "success"
   val validMode        = "100644"
   val validBlobType    = "blob"
+  val validAvatarUrl   = "https://github.com/images/error/hubot_happy.gif"
+  val validNodeId      = "MDY6U3RhdHVzMQ=="
 
   val treeDataList: List[TreeData] = List(
-    TreeDataSha(validPath, validMode, validBlobType, validTreeSha))
+    TreeDataSha(validPath, validMode, validBlobType, validTreeSha)
+  )
   val treeDataResult = List(
     TreeDataResult(
       path = validPath,
@@ -145,10 +151,12 @@ trait TestData extends DummyGithubUrls {
       `type` = validBlobType,
       size = Some(100),
       sha = validTreeSha,
-      url = githubApiUrl))
+      url = githubApiUrl
+    )
+  )
 
   val refObject = RefObject(commitType, validCommitSha, githubApiUrl)
-  val ref       = Ref("XXXX", githubApiUrl, refObject)
+  val ref       = Ref("XXXX", "nodeid", githubApiUrl, refObject)
 
   val refCommitAuthor =
     RefAuthor("2014-11-07T22:01:45Z", validUsername, "developer@47deg.com")
@@ -160,7 +168,8 @@ trait TestData extends DummyGithubUrls {
     committer = refCommitAuthor,
     message = validNote,
     tree = refInfo,
-    parents = List(refInfo))
+    parents = List(refInfo)
+  )
 
   val issue = Issue(
     id = 1,
@@ -277,13 +286,14 @@ trait TestData extends DummyGithubUrls {
   )
 
   val status = Status(
-    id = 1,
     url = githubApiUrl,
+    avatar_url = validAvatarUrl,
+    id = 1,
+    node_id = validNodeId,
     state = validStatusState,
     target_url = None,
     description = None,
     context = None,
-    creator = Some(user),
     created_at = "2011-04-10T20:09:31Z",
     updated_at = "2011-04-10T20:09:31Z"
   )
@@ -376,7 +386,8 @@ trait TestData extends DummyGithubUrls {
     ),
     `protected` = Some(true),
     protection_url = Some(
-      s"https://api.github.com/repos/$validRepoOwner/$validRepoName/branches/$validBranchName/protection")
+      s"https://api.github.com/repos/$validRepoOwner/$validRepoName/branches/$validBranchName/protection"
+    )
   )
   val branch = protectedBranch.copy(`protected` = None, protection_url = None)
 
@@ -404,4 +415,111 @@ trait TestData extends DummyGithubUrls {
     html_url = "",
     pull_request_url = ""
   )
+
+  val validNameTeam = "47 Devs"
+  val validSlug     = "47-devs"
+
+  val team = Team(
+    name = validNameTeam,
+    id = 40235,
+    node_id = "MDQ6VGVhbTQwMjM1",
+    slug = validSlug,
+    description = null,
+    privacy = "secret",
+    url = "https://api.github.com/organizations/479857/team/40235",
+    html_url = "https://github.com/orgs/47deg/teams/47-devs",
+    members_url = "https://api.github.com/organizations/479857/team/40235/members{/member}",
+    repositories_url = "https://api.github.com/organizations/479857/team/40235/repos",
+    permission = "push",
+    parent = null
+  )
+
+  val validProjectId   = 1903050
+  val invalidProjectId = 11111
+
+  val project = Project(
+    owner_url = "https://api.github.com/orgs/47deg",
+    url = "https://api.github.com/projects/1903050",
+    html_url = "https://github.com/orgs/47deg/projects/4",
+    columns_url = "https://api.github.com/projects/1903050/columns",
+    id = validProjectId,
+    node_id = "MDc6UHJvamVjdDE5MDMwNTA=",
+    name = "Team Asterism",
+    body = Some(
+      "Track all things related with the open source initiatives maintained by the Asterism internal tea"
+    ),
+    number = 4,
+    creator = Creator(
+      login = "calvellido",
+      id = 7753447,
+      node_id = "MDQ6VXNlcjc3NTM0NDc=",
+      avatar_url = "https://avatars0.githubusercontent.com/u/7753447?v=4",
+      gravatar_id = None,
+      url = "https://api.github.com/users/calvellido",
+      html_url = "https://github.com/calvellido",
+      followers_url = "https://api.github.com/users/calvellido/followers",
+      following_url = "https://api.github.com/users/calvellido/following{/other_user}",
+      gists_url = "https://api.github.com/users/calvellido/gists{/gist_id}",
+      starred_url = "https://api.github.com/users/calvellido/starred{/owner}{/repo}",
+      subscriptions_url = "https://api.github.com/users/calvellido/subscriptions",
+      organizations_url = "https://api.github.com/users/calvellido/orgs",
+      repos_url = "https://api.github.com/users/calvellido/repos",
+      events_url = "https://api.github.com/users/calvellido/events{/privacy}",
+      received_events_url = "https://api.github.com/users/calvellido/received_events",
+      `type` = "User",
+      site_admin = false
+    ),
+    created_at = "2018-10-30T14:18:42Z",
+    updated_at = "2019-09-30T07:26:21Z",
+    organization_permission = Some("read"),
+    `private` = Some(true)
+  )
+
+  val column = Column(
+    url = "https://api.github.com/projects/columns/3724010",
+    project_url = "https://api.github.com/projects/1910444",
+    cards_url = "https://api.github.com/projects/columns/3724010/cards",
+    id = 3724010,
+    node_id = "MDEzOlByb2plY3RDb2x1bW4zNzI0MDEw",
+    name = "To do",
+    created_at = "2018-11-02T09:36:28Z",
+    updated_at = "2019-07-04T09:39:01Z"
+  )
+
+  val validColumnId   = 8271018
+  val invalidColumnId = -32
+
+  val card = Card(
+    url = "https://api.github.com/projects/columns/cards/34323195",
+    project_url = "https://api.github.com/projects/4085286",
+    id = 34323195,
+    node_id = "MDExOlByb2plY3RDYXJkMzQzMjMxOTU=",
+    note = Some("Test Card"),
+    archived = false,
+    creator = Creator(
+      login = "calvellido",
+      id = 7753447,
+      node_id = "MDQ6VXNlcjc3NTM0NDc=",
+      avatar_url = "https://avatars0.githubusercontent.com/u/7753447?v=4",
+      gravatar_id = None,
+      url = "https://api.github.com/users/calvellido",
+      html_url = "https://github.com/calvellido",
+      followers_url = "https://api.github.com/users/calvellido/followers",
+      following_url = "https://api.github.com/users/calvellido/following{/other_user}",
+      gists_url = "https://api.github.com/users/calvellido/gists{/gist_id}",
+      starred_url = "https://api.github.com/users/calvellido/starred{/owner}{/repo}",
+      subscriptions_url = "https://api.github.com/users/calvellido/subscriptions",
+      organizations_url = "https://api.github.com/users/calvellido/orgs",
+      repos_url = "https://api.github.com/users/calvellido/repos",
+      events_url = "https://api.github.com/users/calvellido/events{/privacy}",
+      received_events_url = "https://api.github.com/users/calvellido/received_events",
+      `type` = "User",
+      site_admin = false
+    ),
+    created_at = "2018-11-02T09:36:28Z",
+    updated_at = "2019-07-04T09:39:01Z",
+    column_url = "https://api.github.com/projects/columns/8271018",
+    content_url = None
+  )
+
 }

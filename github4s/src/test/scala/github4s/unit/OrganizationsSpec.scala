@@ -16,45 +16,44 @@
 
 package github4s.unit
 
-import cats.Id
-import github4s.GithubResponses.{GHResponse, GHResult}
-import github4s.HttpClient
-import github4s.api.Organizations
-import github4s.free.domain.User
+import cats.effect.IO
+import cats.syntax.either._
+import github4s.GithubResponses.GHResponse
+import github4s.domain._
+import github4s.interpreters.OrganizationsInterpreter
 import github4s.utils.BaseSpec
 
 class OrganizationsSpec extends BaseSpec {
 
+  implicit val token = sampleToken
+
   "Organization.listMembers" should "call to httpClient.get with the right parameters" in {
 
-    val response: GHResponse[List[User]] =
-      Right(GHResult(List(user), okStatusCode, Map.empty))
+    val response: IO[GHResponse[List[User]]] =
+      IO(GHResponse(List(user).asRight, okStatusCode, Map.empty))
 
-    val httpClientMock = httpClientMockGet[List[User]](
+    implicit val httpClientMock = httpClientMockGet[List[User]](
       url = s"orgs/$validRepoOwner/members",
       response = response
     )
 
-    val organizations = new Organizations[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    organizations.listMembers(sampleToken, headerUserAgent, validRepoOwner)
+    val organizations = new OrganizationsInterpreter[IO]
+
+    organizations.listMembers(validRepoOwner, None, None, None, headerUserAgent)
   }
 
   "Organization.listOutsideCollaborators" should "call to httpClient.get with the right parameters" in {
+    val response: IO[GHResponse[List[User]]] =
+      IO(GHResponse(List(user).asRight, okStatusCode, Map.empty))
 
-    val response: GHResponse[List[User]] =
-      Right(GHResult(List(user), okStatusCode, Map.empty))
-
-    val httpClientMock = httpClientMockGet[List[User]](
+    implicit val httpClientMock = httpClientMockGet[List[User]](
       url = s"orgs/$validOrganizationName/outside_collaborators",
       response = response
     )
 
-    val organizations = new Organizations[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    organizations.listOutsideCollaborators(sampleToken, headerUserAgent, validOrganizationName)
+    val organizations = new OrganizationsInterpreter[IO]
+
+    organizations.listOutsideCollaborators(validOrganizationName, None, None, headerUserAgent)
   }
 
 }

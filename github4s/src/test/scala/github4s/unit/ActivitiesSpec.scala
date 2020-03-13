@@ -16,69 +16,63 @@
 
 package github4s.unit
 
-import cats.Id
-import github4s.GithubResponses.{GHResponse, GHResult}
-import github4s.HttpClient
-import github4s.api.Activities
-import github4s.free.domain._
+import cats.effect.IO
+import cats.syntax.either._
+import github4s.GithubResponses.GHResponse
+import github4s.interpreters.ActivitiesInterpreter
+import github4s.domain._
 import github4s.utils.BaseSpec
 
 class ActivitiesSpec extends BaseSpec {
 
+  implicit val token = sampleToken
+
   "Activity.setThreadSub" should "call to httpClient.put with the right parameters" in {
 
-    val response: GHResponse[Subscription] =
-      Right(GHResult(subscription, okStatusCode, Map.empty))
+    val response: IO[GHResponse[Subscription]] =
+      IO(GHResponse(subscription.asRight, okStatusCode, Map.empty))
 
-    val request =
-      """
-        |{
-        |  "subscribed": true,
-        |  "ignored": false
-        |}""".stripMargin
+    val request = SubscriptionRequest(true, false)
 
-    val httpClientMock = httpClientMockPut[Subscription](
+    implicit val httpClientMock = httpClientMockPut[SubscriptionRequest, Subscription](
       url = s"notifications/threads/$validThreadId/subscription",
-      json = request,
+      req = request,
       response = response
     )
 
-    val activities = new Activities[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    activities.setThreadSub(sampleToken, headerUserAgent, validThreadId, true, false)
+    val activities = new ActivitiesInterpreter[IO]
+
+    activities.setThreadSub(validThreadId, true, false, headerUserAgent)
   }
 
   "Activity.listStargazers" should "call to httpClient.get with the right parameters" in {
 
-    val response: GHResponse[List[Stargazer]] =
-      Right(GHResult(List(stargazer), okStatusCode, Map.empty))
+    val response: IO[GHResponse[List[Stargazer]]] =
+      IO(GHResponse(List(stargazer).asRight, okStatusCode, Map.empty))
 
-    val httpClientMock = httpClientMockGet[List[Stargazer]](
+    implicit val httpClientMock = httpClientMockGet[List[Stargazer]](
       url = s"repos/$validRepoOwner/$validRepoName/stargazers",
       response = response
     )
 
-    val activities = new Activities[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    activities.listStargazers(sampleToken, headerUserAgent, validRepoOwner, validRepoName, false)
+    val activities = new ActivitiesInterpreter[IO]
+
+    activities.listStargazers(validRepoOwner, validRepoName, false, None, headerUserAgent)
   }
 
   "Activity.listStarredRepositories" should "call to httpClient.get with the right parameters" in {
 
-    val response: GHResponse[List[StarredRepository]] =
-      Right(GHResult(List(starredRepository), okStatusCode, Map.empty))
+    val response: IO[GHResponse[List[StarredRepository]]] =
+      IO(GHResponse(List(starredRepository).asRight, okStatusCode, Map.empty))
 
-    val httpClientMock = httpClientMockGet[List[StarredRepository]](
+    implicit val httpClientMock = httpClientMockGet[List[StarredRepository]](
       url = s"users/$validUsername/starred",
       response = response
     )
 
-    val activities = new Activities[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    activities.listStarredRepositories(sampleToken, headerUserAgent, validUsername, false)
+    val activities = new ActivitiesInterpreter[IO]
+
+    activities.listStarredRepositories(validUsername, false, None, None, None, headerUserAgent)
   }
 
 }

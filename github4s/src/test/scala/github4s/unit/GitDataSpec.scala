@@ -16,278 +16,213 @@
 
 package github4s.unit
 
-import cats.Id
+import cats.effect.IO
+import cats.syntax.either._
 import cats.data.NonEmptyList
-import github4s.GithubResponses.{GHResponse, GHResult}
-import github4s.HttpClient
-import github4s.api.GitData
-import github4s.free.domain._
+import github4s.GithubResponses.GHResponse
+import github4s.domain._
+import github4s.interpreters.GitDataInterpreter
 import github4s.utils.BaseSpec
 
 class GitDataSpec extends BaseSpec {
 
-  "GitData.reference" should "call to httpClient.get with the right parameters" in {
+  implicit val token = sampleToken
 
-    val response: GHResponse[NonEmptyList[Ref]] =
-      Right(GHResult(NonEmptyList(ref, Nil), okStatusCode, Map.empty))
+  "GitData.getReference" should "call to httpClient.get with the right parameters" in {
 
-    val httpClientMock = httpClientMockGet[NonEmptyList[Ref]](
+    val response: IO[GHResponse[NonEmptyList[Ref]]] =
+      IO(GHResponse(NonEmptyList.one(ref).asRight, okStatusCode, Map.empty))
+
+    implicit val httpClientMock = httpClientMockGet[NonEmptyList[Ref]](
       url = s"repos/$validRepoOwner/$validRepoName/git/refs/$validRefSingle",
       response = response
     )
 
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    gitData.reference(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validRefSingle)
+    val gitData = new GitDataInterpreter[IO]
+    gitData.getReference(validRepoOwner, validRepoName, validRefSingle, headerUserAgent)
   }
 
   "GitData.createReference" should "call to httpClient.post with the right parameters" in {
 
-    val response: GHResponse[Ref] =
-      Right(GHResult(ref, okStatusCode, Map.empty))
-    val request =
-      s"""
-         |{
-         |  "ref": "refs/$validRefSingle",
-         |  "sha": "$validCommitSha"
-         |}
-       """.stripMargin
-    val httpClientMock = httpClientMockPost[Ref](
+    val response: IO[GHResponse[Ref]] =
+      IO(GHResponse(ref.asRight, okStatusCode, Map.empty))
+    val request = CreateReferenceRequest(s"refs/$validRefSingle", validCommitSha)
+
+    implicit val httpClientMock = httpClientMockPost[CreateReferenceRequest, Ref](
       url = s"repos/$validRepoOwner/$validRepoName/git/refs",
-      json = request,
+      req = request,
       response = response
     )
 
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
     gitData.createReference(
-      sampleToken,
-      headerUserAgent,
       validRepoOwner,
       validRepoName,
       s"refs/$validRefSingle",
-      validCommitSha)
+      validCommitSha,
+      headerUserAgent
+    )
+
   }
 
   "GitData.updateReference" should "call to httpClient.patch with the right parameters" in {
 
-    val response: GHResponse[Ref] =
-      Right(GHResult(ref, okStatusCode, Map.empty))
-    val force = false
-    val request =
-      s"""
-         |{
-         |  "sha": "$validCommitSha",
-         |  "force": $force
-         |}
-       """.stripMargin
+    val response: IO[GHResponse[Ref]] =
+      IO(GHResponse(ref.asRight, okStatusCode, Map.empty))
+    val force   = false
+    val request = UpdateReferenceRequest(validCommitSha, force)
 
-    val httpClientMock = httpClientMockPatch[Ref](
+    implicit val httpClientMock = httpClientMockPatch[UpdateReferenceRequest, Ref](
       url = s"repos/$validRepoOwner/$validRepoName/git/refs/$validRefSingle",
-      json = request,
+      req = request,
       response = response
     )
 
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
     gitData.updateReference(
-      sampleToken,
-      headerUserAgent,
       validRepoOwner,
       validRepoName,
       validRefSingle,
       validCommitSha,
-      force)
+      force,
+      headerUserAgent
+    )
+
   }
 
   "GitData.getCommit" should "call to httpClient.get with the right parameters" in {
 
-    val response: GHResponse[RefCommit] =
-      Right(GHResult(refCommit, okStatusCode, Map.empty))
-    val httpClientMock = httpClientMockGet[RefCommit](
+    val response: IO[GHResponse[RefCommit]] =
+      IO(GHResponse(refCommit.asRight, okStatusCode, Map.empty))
+    implicit val httpClientMock = httpClientMockGet[RefCommit](
       url = s"repos/$validRepoOwner/$validRepoName/git/commits/$validCommitSha",
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
 
-    gitData.commit(sampleToken, headerUserAgent, validRepoOwner, validRepoName, validCommitSha)
+    gitData.getCommit(validRepoOwner, validRepoName, validCommitSha, headerUserAgent)
   }
 
   "GitData.createCommit" should "call to httpClient.post with the right parameters" in {
 
-    val response: GHResponse[RefCommit] =
-      Right(GHResult(refCommit, okStatusCode, Map.empty))
+    val response: IO[GHResponse[RefCommit]] =
+      IO(GHResponse(refCommit.asRight, okStatusCode, Map.empty))
     val request =
-      s"""
-         |{
-         |  "message": "$validNote",
-         |  "tree": "$validTreeSha",
-         |  "parents": ["$validCommitSha"],
-         |  "author": {
-         |    "name": "${refCommitAuthor.name}",
-         |    "email": "${refCommitAuthor.email}",
-         |    "date": "${refCommitAuthor.date}"
-         |  }
-         |}
-       """.stripMargin
-    val httpClientMock = httpClientMockPost[RefCommit](
+      NewCommitRequest(validNote, validTreeSha, List(validCommitSha), Some(refCommitAuthor))
+
+    implicit val httpClientMock = httpClientMockPost[NewCommitRequest, RefCommit](
       url = s"repos/$validRepoOwner/$validRepoName/git/commits",
-      json = request,
+      req = request,
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
     gitData.createCommit(
-      sampleToken,
-      headerUserAgent,
       validRepoOwner,
       validRepoName,
       validNote,
       validTreeSha,
       List(validCommitSha),
-      Some(refCommitAuthor))
+      Some(refCommitAuthor),
+      headerUserAgent
+    )
+
   }
 
   "GitData.createBlob" should "call to httpClient.post with the right parameters" in {
 
-    val response: GHResponse[RefInfo] =
-      Right(GHResult(new RefInfo(validCommitSha, githubApiUrl), okStatusCode, Map.empty))
-    val request =
-      s"""
-         |{
-         |  "content": "$validNote"
-         |  ${encoding.map(e => ",\"encoding\": \"" + e + "\"").getOrElse(" ")}
-         |}
-       """.stripMargin
-    val httpClientMock = httpClientMockPost[RefInfo](
+    val response: IO[GHResponse[RefInfo]] =
+      IO(GHResponse(RefInfo(validCommitSha, githubApiUrl).asRight, okStatusCode, Map.empty))
+    val request = NewBlobRequest(validNote, encoding)
+
+    implicit val httpClientMock = httpClientMockPost[NewBlobRequest, RefInfo](
       url = s"repos/$validRepoOwner/$validRepoName/git/blobs",
-      json = request,
+      req = request,
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
-    gitData.createBlob(
-      sampleToken,
-      headerUserAgent,
-      validRepoOwner,
-      validRepoName,
-      validNote,
-      encoding)
+    val gitData = new GitDataInterpreter[IO]
+    gitData.createBlob(validRepoOwner, validRepoName, validNote, encoding, headerUserAgent)
+
   }
 
   "GitData.getTree" should "call to httpClient.get with the right parameters" in {
 
-    val response: GHResponse[TreeResult] =
-      Right(
-        GHResult(
-          TreeResult(validCommitSha, githubApiUrl, treeDataResult, truncated = Some(false)),
+    val response: IO[GHResponse[TreeResult]] =
+      IO(
+        GHResponse(
+          TreeResult(validCommitSha, githubApiUrl, treeDataResult, truncated = Some(false)).asRight,
           okStatusCode,
-          Map.empty))
-    val httpClientMock = httpClientMockGet[TreeResult](
+          Map.empty
+        )
+      )
+
+    implicit val httpClientMock = httpClientMockGet[TreeResult](
       url = s"repos/$validRepoOwner/$validRepoName/git/trees/$validCommitSha",
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
 
-    gitData.tree(
-      sampleToken,
-      headerUserAgent,
+    gitData.getTree(
       validRepoOwner,
       validRepoName,
       validCommitSha,
-      recursive = false)
+      recursive = false,
+      headerUserAgent
+    )
+
   }
 
   "GitData.createTree" should "call to httpClient.post with the right parameters" in {
 
-    val response: GHResponse[TreeResult] =
-      Right(
-        GHResult(TreeResult(validCommitSha, githubApiUrl, treeDataResult), okStatusCode, Map.empty))
-    def treeDataJson(treeData: TreeData): String = {
+    val response: IO[GHResponse[TreeResult]] =
+      IO(
+        GHResponse(
+          TreeResult(validCommitSha, githubApiUrl, treeDataResult).asRight,
+          okStatusCode,
+          Map.empty
+        )
+      )
 
-      def attr: String = treeData match {
-        case d: TreeDataSha  => "\"sha\": \"" + d.sha + "\""
-        case d: TreeDataBlob => "\"content\": \"" + d.content + "\""
-      }
+    val request = NewTreeRequest(Some(validTreeSha), treeDataList)
 
-      s"""
-         |{
-         |  "path": "${treeData.path}",
-         |  "mode": "${treeData.mode}",
-         |  "type": "${treeData.`type`}",
-         |  $attr
-         |}
-       """.stripMargin
-    }
-
-    val request =
-      s"""
-         |{
-         |  "base_tree": "$validTreeSha",
-         |  "tree": [ ${treeDataList.map(treeDataJson).mkString(",")} ]
-         |}
-       """.stripMargin
-    val httpClientMock = httpClientMockPost[TreeResult](
+    implicit val httpClientMock = httpClientMockPost[NewTreeRequest, TreeResult](
       url = s"repos/$validRepoOwner/$validRepoName/git/trees",
-      json = request,
+      req = request,
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
     gitData.createTree(
-      sampleToken,
-      headerUserAgent,
       validRepoOwner,
       validRepoName,
       Some(validTreeSha),
-      treeDataList)
+      treeDataList,
+      headerUserAgent
+    )
+
   }
 
   "GitData.createTag" should "call to httpClient.post with the right parameters" in {
 
-    val response: GHResponse[Tag] = Right(GHResult(tag, okStatusCode, Map.empty))
+    val response: IO[GHResponse[Tag]] = IO(GHResponse(tag.asRight, okStatusCode, Map.empty))
     val request =
-      s"""
-         |{
-         |  "tag": "$validTagTitle",
-         |  "message": "$validNote",
-         |  "object": "$validCommitSha",
-         |  "type": "$commitType",
-         |  "tagger": {
-         |    "name": "${refCommitAuthor.name}",
-         |    "email": "${refCommitAuthor.email}",
-         |    "date": "${refCommitAuthor.date}"
-         |  }
-         |}
-       """.stripMargin
-    val httpClientMock = httpClientMockPost[Tag](
+      NewTagRequest(validTagTitle, validNote, validCommitSha, commitType, Some(refCommitAuthor))
+
+    implicit val httpClientMock = httpClientMockPost[NewTagRequest, Tag](
       url = s"repos/$validRepoOwner/$validRepoName/git/tags",
-      json = request,
+      req = request,
       response = response
     )
-    val gitData = new GitData[Id] {
-      override val httpClient: HttpClient[Id] = httpClientMock
-    }
+    val gitData = new GitDataInterpreter[IO]
     gitData.createTag(
-      sampleToken,
-      headerUserAgent,
       validRepoOwner,
       validRepoName,
       validTagTitle,
       validNote,
       validCommitSha,
       commitType,
-      Some(refCommitAuthor))
+      Some(refCommitAuthor),
+      headerUserAgent
+    )
+
   }
 
 }
