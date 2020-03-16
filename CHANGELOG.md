@@ -1,5 +1,23 @@
 # Changelog
 
+## 03/16/2020 - Version 0.23.0
+
+Release changes:
+
+* Project API  ([#354](https://github.com/47degrees/github4s/pull/354))
+* Example using F ([#358](https://github.com/47degrees/github4s/pull/358))
+* List milestone and List Labels in a project ([#359](https://github.com/47degrees/github4s/pull/359))
+* Update sbt-microsites to 1.1.3 ([#366](https://github.com/47degrees/github4s/pull/366))
+* List repository projects  ([#365](https://github.com/47degrees/github4s/pull/365))
+* Rework GHResponse to incorporate useful data on unhappy path ([#367](https://github.com/47degrees/github4s/pull/367))
+* Introduce sbt-tpolecat ([#368](https://github.com/47degrees/github4s/pull/368))
+* List cards ([#364](https://github.com/47degrees/github4s/pull/364))
+* Update cats-effect to 2.1.1 ([#342](https://github.com/47degrees/github4s/pull/342))
+* Update sbt-mdoc to 2.1.3 ([#369](https://github.com/47degrees/github4s/pull/369))
+* Migrates from 47deg to 47degrees GH organization ([#370](https://github.com/47degrees/github4s/pull/370))
+* Releases 0.23.0 ([#372](https://github.com/47degrees/github4s/pull/372))
+
+
 ## 02/28/2020 - Version 0.22.0
 
 Release changes:
