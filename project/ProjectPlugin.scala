@@ -83,7 +83,7 @@ object ProjectPlugin extends AutoPlugin {
         %%("circe-parser", V.circe)  % Test,
         %%("scalamock", V.scalamock) % Test,
         %%("scalatest", V.scalaTest) % Test,
-        "org.mock-server"            % "mockserver-netty" % "5.9.0" % Test excludeAll ExclusionRule(
+        "org.mock-server"            % "mockserver-netty" % "5.10" % Test excludeAll ExclusionRule(
           "com.twitter"
         ),
         compilerPlugin("com.github.ghik" % "silencer-plugin" % V.silencer cross CrossVersion.full),
@@ -154,5 +154,5 @@ object ProjectPlugin extends AutoPlugin {
             !toPath.startsWith("github4s/BuildInfo")
         }
       }
-    ) ++ shellPromptSettings ++ sharedScoverageSettings(75d)
+    ) ++ shellPromptSettings ++ sharedScoverageSettings(70d)
 }
