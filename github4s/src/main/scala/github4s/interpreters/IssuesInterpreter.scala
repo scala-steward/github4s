@@ -21,6 +21,8 @@ import github4s.algebras.Issues
 import github4s.GithubResponses.GHResponse
 import github4s.domain._
 import java.net.URLEncoder.encode
+import java.time.ZonedDateTime
+
 import github4s.Decoders._
 import github4s.Encoders._
 
@@ -213,5 +215,21 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       pagination = pagination,
       params =
         List(state.map("state" -> _), sort.map("sort" -> _), direction.map("direction" -> _)).flatten.toMap
+    )
+
+  override def createMilestone(
+      owner: String,
+      repo: String,
+      title: String,
+      state: Option[String],
+      description: Option[String],
+      due_on: Option[ZonedDateTime],
+      headers: Map[String, String]
+  ): F[GHResponse[Milestone]] =
+    client.post[MilestoneData, Milestone](
+      accessToken,
+      s"repos/$owner/$repo/milestones",
+      headers,
+      MilestoneData(title, state, description, due_on)
     )
 }
