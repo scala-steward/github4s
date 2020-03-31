@@ -337,4 +337,21 @@ trait Issues[F[_]] {
       due_on: Option[ZonedDateTime],
       headers: Map[String, String] = Map()
   ): F[GHResponse[Milestone]]
+
+  /**
+   * Get a single milestone
+   *
+   * @param owner repo owner
+   * @param repo repo name
+   * @param number Milestone number
+   * @param headers optional user headers to include in the request
+   * @return a GHResponse with a Milestone
+   */
+  def getMilestone(
+      owner: String,
+      repo: String,
+      number: Int,
+      headers: Map[String, String] = Map()
+  ): F[GHResponse[Milestone]]
+
 }
