@@ -166,6 +166,42 @@ case class CombinedStatus(
     statuses: List[Status],
     repository: StatusRepository
 )
+
+case class WriteFileRequest(
+    message: String,
+    content: String,
+    sha: Option[String] = None,
+    branch: Option[String] = None,
+    committer: Option[Committer] = None,
+    author: Option[Committer] = None
+)
+
+case class DeleteFileRequest(
+    message: String,
+    sha: String,
+    branch: Option[String] = None,
+    committer: Option[Committer] = None,
+    author: Option[Committer] = None
+)
+
+case class WriteResponseCommit(
+    sha: String,
+    url: String,
+    html_url: String,
+    author: Option[Committer],
+    committer: Option[Committer],
+    message: String
+)
+
+case class WriteFileResponse(
+    content: Option[Content],
+    commit: WriteResponseCommit
+)
+
+case class Committer(
+    name: String,
+    email: String
+)
 object RepoUrlKeys {
 
   val forks_url         = "forks_url"

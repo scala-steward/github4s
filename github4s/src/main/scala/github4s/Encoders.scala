@@ -43,6 +43,11 @@ object Encoders {
     )
   }
 
+  implicit val encoderCommiter: Encoder[Committer] = deriveEncoder[Committer]
+  implicit val encoderDeleteFileRequest: Encoder[DeleteFileRequest] =
+    deriveEncoder[DeleteFileRequest]
+  implicit val encoderWriteFileContentRequest: Encoder[WriteFileRequest] =
+    deriveEncoder[WriteFileRequest]
   implicit val encoderCreateReferenceRequest: Encoder[CreateReferenceRequest] =
     deriveEncoder[CreateReferenceRequest]
   implicit val encoderNewCommitRequest: Encoder[NewCommitRequest] = deriveEncoder[NewCommitRequest]

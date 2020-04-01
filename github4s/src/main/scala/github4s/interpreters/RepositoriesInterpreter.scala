@@ -23,6 +23,7 @@ import github4s.GithubResponses.GHResponse
 import github4s.domain._
 import github4s.Decoders._
 import github4s.Encoders._
+import com.github.marklister.base64.Base64._
 
 class RepositoriesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Option[String])
     extends Repositories[F] {
@@ -73,6 +74,61 @@ class RepositoriesInterpreter[F[_]](implicit client: HttpClient[F], accessToken:
       s"repos/$owner/$repo/contents/$path",
       headers,
       ref.fold(Map.empty[String, String])(r => Map("ref" -> r))
+    )
+
+  override def createFile(
+      owner: String,
+      repo: String,
+      path: String,
+      message: String,
+      content: Array[Byte],
+      branch: Option[String],
+      committer: Option[Committer],
+      author: Option[Committer],
+      headers: Map[String, String] = Map()
+  ): F[GHResponse[WriteFileResponse]] =
+    client.put[WriteFileRequest, WriteFileResponse](
+      accessToken,
+      s"repos/$owner/$repo/contents/$path",
+      headers,
+      WriteFileRequest(message, content.toBase64, None, branch, committer, author)
+    )
+
+  override def updateFile(
+      owner: String,
+      repo: String,
+      path: String,
+      message: String,
+      content: Array[Byte],
+      sha: String,
+      branch: Option[String],
+      committer: Option[Committer],
+      author: Option[Committer],
+      headers: Map[String, String] = Map()
+  ): F[GHResponse[WriteFileResponse]] =
+    client.put[WriteFileRequest, WriteFileResponse](
+      accessToken,
+      s"repos/$owner/$repo/contents/$path",
+      headers,
+      WriteFileRequest(message, content.toBase64, Some(sha), branch, committer, author)
+    )
+
+  override def deleteFile(
+      owner: String,
+      repo: String,
+      path: String,
+      message: String,
+      sha: String,
+      branch: Option[String],
+      committer: Option[Committer],
+      author: Option[Committer],
+      headers: Map[String, String] = Map()
+  ): F[GHResponse[WriteFileResponse]] =
+    client.deleteWithBody[DeleteFileRequest, WriteFileResponse](
+      accessToken,
+      s"repos/$owner/$repo/contents/$path",
+      headers,
+      DeleteFileRequest(message, sha, branch, committer, author)
     )
 
   override def listCommits(

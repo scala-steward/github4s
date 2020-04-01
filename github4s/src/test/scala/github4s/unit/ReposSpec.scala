@@ -23,6 +23,7 @@ import github4s.GithubResponses.GHResponse
 import github4s.domain._
 import github4s.interpreters.RepositoriesInterpreter
 import github4s.utils.BaseSpec
+import com.github.marklister.base64.Base64._
 
 class ReposSpec extends BaseSpec {
 
@@ -83,6 +84,109 @@ class ReposSpec extends BaseSpec {
     val repos = new RepositoriesInterpreter[IO]
 
     repos.getContents(validRepoOwner, validRepoName, validFilePath, Some("master"), headerUserAgent)
+  }
+
+  "Repos.createFile" should "call to httpClient.put with the right parameters" in {
+    val response: IO[GHResponse[WriteFileResponse]] =
+      IO(GHResponse(writeFileResponse.asRight, okStatusCode, Map.empty))
+
+    val request = WriteFileRequest(
+      validNote,
+      validFileContent.getBytes.toBase64,
+      None,
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter)
+    )
+
+    implicit val httpClientMock = httpClientMockPut[WriteFileRequest, WriteFileResponse](
+      url = s"repos/$validRepoOwner/$validRepoName/contents/$validFilePath",
+      req = request,
+      response = response
+    )
+
+    val repos = new RepositoriesInterpreter[IO]
+
+    repos.createFile(
+      validRepoOwner,
+      validRepoName,
+      validFilePath,
+      validNote,
+      validFileContent.getBytes,
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter),
+      headerUserAgent
+    )
+  }
+
+  "Repos.updateFile" should "call to httpClient.put with the right parameters" in {
+    val response: IO[GHResponse[WriteFileResponse]] =
+      IO(GHResponse(writeFileResponse.asRight, okStatusCode, Map.empty))
+
+    val request = WriteFileRequest(
+      validNote,
+      validFileContent.getBytes.toBase64,
+      Some(validCommitSha),
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter)
+    )
+
+    implicit val httpClientMock = httpClientMockPut[WriteFileRequest, WriteFileResponse](
+      url = s"repos/$validRepoOwner/$validRepoName/contents/$validFilePath",
+      req = request,
+      response = response
+    )
+
+    val repos = new RepositoriesInterpreter[IO]
+
+    repos.updateFile(
+      validRepoOwner,
+      validRepoName,
+      validFilePath,
+      validNote,
+      validFileContent.getBytes,
+      validCommitSha,
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter),
+      headerUserAgent
+    )
+  }
+
+  "Repos.deleteFile" should "call to httpClient.delete with the right parameters" in {
+    val response: IO[GHResponse[WriteFileResponse]] =
+      IO(GHResponse(writeFileResponse.asRight, okStatusCode, Map.empty))
+
+    val request = DeleteFileRequest(
+      validNote,
+      validCommitSha,
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter)
+    )
+
+    implicit val httpClientMock =
+      httpClientMockDeleteWithBody[DeleteFileRequest, WriteFileResponse](
+        url = s"repos/$validRepoOwner/$validRepoName/contents/$validFilePath",
+        req = request,
+        response = response
+      )
+
+    val repos = new RepositoriesInterpreter[IO]
+
+    repos.deleteFile(
+      validRepoOwner,
+      validRepoName,
+      validFilePath,
+      validNote,
+      validCommitSha,
+      Some(validBranchName),
+      Some(validCommitter),
+      Some(validCommitter),
+      headerUserAgent
+    )
   }
 
   "Repos.createRelease" should "call to httpClient.post with the right parameters" in {
