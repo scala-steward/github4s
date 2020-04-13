@@ -1,43 +1,36 @@
 addCommandAlias("ci-test", "+scalafmtCheck; +scalafmtSbtCheck; +docs/mdoc; +test")
 addCommandAlias("ci-docs", "project-docs/mdoc; headerCreateAll")
 
-lazy val root = (project in file("."))
-  .settings(moduleName := "github4s-root")
-  .aggregate(github4s)
-  .dependsOn(github4s)
-  .settings(noPublishSettings: _*)
+skip in publish := true
 
-lazy val github4s =
-  (project in file("github4s"))
-    .settings(moduleName := "github4s")
-    .enablePlugins(BuildInfoPlugin)
-    .settings(
-      buildInfoKeys := Seq[BuildInfoKey](
-        name,
-        version,
-        "token" -> sys.env.getOrElse("GITHUB_TOKEN", "")
-      ),
-      buildInfoPackage := "github4s"
-    )
-    .settings(coreDeps: _*)
+lazy val github4s = project
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      "token" -> sys.env.getOrElse("GITHUB_TOKEN", "")
+    ),
+    buildInfoPackage := "github4s"
+  )
+  .settings(coreDeps: _*)
 
 //////////
 // DOCS //
 //////////
 
-lazy val docs = (project in file("docs"))
+lazy val docs = project
   .aggregate(github4s)
   .dependsOn(github4s)
-  .settings(moduleName := "github4s-docs")
   .settings(micrositeSettings: _*)
-  .settings(noPublishSettings: _*)
+  .settings(skip in publish := true)
   .enablePlugins(MicrositesPlugin)
 
 lazy val `project-docs` = (project in file(".docs"))
   .aggregate(github4s)
   .dependsOn(github4s)
   .settings(moduleName := "github4s-project-docs")
-  .settings(mdocVariables += "NAME" -> "github4s")
+  .settings(mdocIn := file(".docs"))
   .settings(mdocOut := file("."))
-  .settings(noPublishSettings: _*)
+  .settings(skip in publish := true)
   .enablePlugins(MdocPlugin)

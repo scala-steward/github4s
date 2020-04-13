@@ -30,13 +30,6 @@ object ProjectPlugin extends AutoPlugin {
       val silencer: String   = "1.6.0"
     }
 
-    lazy val noPublishSettings = Seq(
-      publish := ((): Unit),
-      publishLocal := ((): Unit),
-      publishArtifact := false,
-      publishMavenStyle := false // suppress warnings about intransitive deps (not published anyway)
-    )
-
     lazy val micrositeSettings = Seq(
       micrositeName := "Github4s",
       micrositeDescription := "Github API wrapper written in Scala",
@@ -92,25 +85,13 @@ object ProjectPlugin extends AutoPlugin {
       })
     )
 
-    def toCompileTestList(sequence: Seq[ProjectReference]): List[String] = sequence.toList.map {
-      p =>
-        val project: String = p.asInstanceOf[LocalProject].project
-        s"$project/test"
-    }
   }
 
   import autoImport.V
 
   override def projectSettings: Seq[Def.Setting[_]] =
     Seq(
-      name := "github4s",
       organization := "com.47deg",
-      organizationName := "47 Degrees",
-      organizationHomepage := Some(url("https://www.47deg.com")),
-      homepage := Option(url("https://47degrees.github.io/github4s/")),
-      description := "Github API wrapper written in Scala",
-      startYear := Option(2016),
-      resolvers += Resolver.sonatypeRepo("snapshots"),
       crossScalaVersions := Seq(V.scala212, V.scala213),
       scalacOptions := {
         val withStripedLinter = scalacOptions.value filterNot Set("-Xlint", "-Xfuture").contains
