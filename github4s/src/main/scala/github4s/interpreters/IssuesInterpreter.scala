@@ -32,9 +32,11 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
   override def listIssues(
       owner: String,
       repo: String,
+      pagination: Option[Pagination] = None,
       headers: Map[String, String] = Map()
   ): F[GHResponse[List[Issue]]] =
-    client.get[List[Issue]](accessToken, s"repos/$owner/$repo/issues", headers)
+    client
+      .get[List[Issue]](accessToken, s"repos/$owner/$repo/issues", headers, pagination = pagination)
 
   override def getIssue(
       owner: String,
@@ -96,10 +98,16 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       owner: String,
       repo: String,
       number: Int,
+      pagination: Option[Pagination] = None,
       headers: Map[String, String] = Map()
   ): F[GHResponse[List[Comment]]] =
     client
-      .get[List[Comment]](accessToken, s"repos/$owner/$repo/issues/$number/comments", headers)
+      .get[List[Comment]](
+        accessToken,
+        s"repos/$owner/$repo/issues/$number/comments",
+        headers,
+        pagination = pagination
+      )
 
   override def createComment(
       owner: String,
@@ -141,8 +149,8 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
   override def listLabelsRepository(
       owner: String,
       repo: String,
-      headers: Map[String, String],
-      pagination: Option[Pagination]
+      pagination: Option[Pagination] = None,
+      headers: Map[String, String] = Map()
   ): F[GHResponse[List[Label]]] =
     client.get[List[Label]](
       accessToken,
@@ -155,9 +163,15 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       owner: String,
       repo: String,
       number: Int,
+      pagination: Option[Pagination] = None,
       headers: Map[String, String] = Map()
   ): F[GHResponse[List[Label]]] =
-    client.get[List[Label]](accessToken, s"repos/$owner/$repo/issues/$number/labels", headers)
+    client.get[List[Label]](
+      accessToken,
+      s"repos/$owner/$repo/issues/$number/labels",
+      headers,
+      pagination = pagination
+    )
 
   override def addLabels(
       owner: String,
@@ -189,7 +203,7 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
   override def listAvailableAssignees(
       owner: String,
       repo: String,
-      pagination: Option[Pagination],
+      pagination: Option[Pagination] = None,
       headers: Map[String, String] = Map()
   ): F[GHResponse[List[User]]] =
     client.get[List[User]](
@@ -205,8 +219,8 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       state: Option[String],
       sort: Option[String],
       direction: Option[String],
-      pagination: Option[Pagination],
-      headers: Map[String, String]
+      pagination: Option[Pagination] = None,
+      headers: Map[String, String] = Map()
   ): F[GHResponse[List[Milestone]]] =
     client.get[List[Milestone]](
       accessToken,
@@ -224,7 +238,7 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       state: Option[String],
       description: Option[String],
       due_on: Option[ZonedDateTime],
-      headers: Map[String, String]
+      headers: Map[String, String] = Map()
   ): F[GHResponse[Milestone]] =
     client.post[MilestoneData, Milestone](
       accessToken,
@@ -237,7 +251,7 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       owner: String,
       repo: String,
       number: Int,
-      headers: Map[String, String]
+      headers: Map[String, String] = Map()
   ): F[GHResponse[Milestone]] =
     client.get[Milestone](accessToken, s"repos/$owner/$repo/milestones/$number", headers)
 
@@ -249,7 +263,7 @@ class IssuesInterpreter[F[_]](implicit client: HttpClient[F], accessToken: Optio
       state: Option[String],
       description: Option[String],
       due_on: Option[ZonedDateTime],
-      headers: Map[String, String]
+      headers: Map[String, String] = Map()
   ): F[GHResponse[Milestone]] = client.patch[MilestoneData, Milestone](
     accessToken,
     s"repos/$owner/$repo/milestones/$milestone_number",
