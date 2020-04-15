@@ -144,19 +144,18 @@ class HttpClient[F[_]: Sync](client: Client[F], val config: GithubConfig) {
 
   private def buildURL(method: String): String = s"${config.baseUrl}$method"
 
-  private def run[Req: Encoder, Res: Decoder](request: RequestBuilder[Req]): F[GHResponse[Res]] = {
+  private def run[Req: Encoder, Res: Decoder](request: RequestBuilder[Req]): F[GHResponse[Res]] =
     client
       .run(
         Request[F]()
           .withMethod(request.httpVerb)
           .withUri(request.toUri(config))
-          .withHeaders(request.toHeaderList: _*)
+          .withHeaders((config.toHeaderList ++ request.toHeaderList): _*)
           .withJsonBody(request.data)
       )
       .use { response =>
         buildResponse(response).map(GHResponse(_, response.status.code, response.headers.toMap))
       }
-  }
 }
 
 object HttpClient {
