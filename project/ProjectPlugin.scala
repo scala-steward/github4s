@@ -24,7 +24,7 @@ object ProjectPlugin extends AutoPlugin {
       val cats: String       = "2.1.1"
       val catsEffect: String = "2.1.1"
       val circe: String      = "0.13.0"
-      val http4s: String     = "0.21.3"
+      val http4s: String     = "0.21.4"
       val paradise: String   = "2.1.1"
       val scalamock: String  = "4.4.0"
       val scalatest: String  = "3.1.1"
