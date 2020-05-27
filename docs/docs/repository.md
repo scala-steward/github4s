@@ -23,6 +23,8 @@ with Github4s, you can interact with:
   - [Update a File](#update-a-file)
   - [Delete a File](#delete-a-file)
 - [Releases](#releases)
+  - [List of releases](#list-of-releases)
+  - [The latest release](#the-latest-release)
   - [Create a release](#create-a-release)
 - [Statuses](#statuses)
   - [Create a status](#create-a-status)
@@ -378,6 +380,28 @@ response.result match {
 ```
 
 The `result` on the right is the corresponding [List[Release]][repository-scala].
+
+### The latest release
+
+You can get the latest release using `latestRelease`, it takes as arguments:
+
+- the repository coordinates (`owner` and `name` of the repository).
+
+Get the latest release:
+
+```scala mdoc:compile-only
+val latestRelease =
+  gh.repos.latestRelease(
+  "47deg",
+  "github4s")
+val response = latestRelease.unsafeRunSync()
+response.result match {
+  case Left(e) => println(s"Something went wrong: ${e.getMessage}")
+  case Right(r) => println(r)
+}
+```
+
+The `result` on the right is the corresponding [Option[Release]][repository-scala].
 
 ### Create a release
 
