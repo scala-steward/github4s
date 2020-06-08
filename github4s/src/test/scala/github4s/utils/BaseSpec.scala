@@ -94,18 +94,16 @@ trait BaseSpec extends AnyFlatSpec with Matchers with TestData with MockFactory 
     httpClientMock
   }
 
-  def httpClientMockPostOAuth[In, Out](
+  def httpClientMockPostOAuth[Out](
       url: String,
-      req: In,
       response: IO[GHResponse[Out]]
   ): HttpClient[IO] = {
     val httpClientMock = mock[HttpClientTest]
     (httpClientMock
-      .postOAuth[In, Out](_: String, _: Map[String, String], _: In)(
-        _: Encoder[In],
+      .postOAuth[Out](_: String, _: Map[String, String], _: Map[String, String])(
         _: Decoder[Out]
       ))
-      .expects(url, headerUserAgent, req, *, *)
+      .expects(url, headerUserAgent, *, *)
       .returns(response)
     httpClientMock
   }
